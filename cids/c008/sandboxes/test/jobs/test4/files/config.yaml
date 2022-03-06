@@ -1,6 +1,0 @@
-c009:
-      vevo:
-        type: aws
-        access_key: access_key
-        secret_key: secret_key
-        role_arn: arn:aws:iam::926083181991:role/DevTempAccessRole
