@@ -1,1 +1,1 @@
-abcd
+{"c900":{"mappings_config":"/etc/opt/aqfer/mappings.yaml","jobs":{"sandbox-mapper":{"type":"event_import","publish_metrics":false,"mode":"append","use_dynamic_conversion":true,"event_schema":{"name":"aqfer_impression","version":"0.7"},"partition_count":100,"input":[{"event_schema":"raw_impression","source":"NA","data_channel":"raw_impressions"}],"output":[{"event_schema":{"name":"aqfer_impression","version":"0.7"},"data_channels":["s3_avro_impression_v0_7"]}]}}}}
