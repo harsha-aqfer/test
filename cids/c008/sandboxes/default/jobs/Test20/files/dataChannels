@@ -1,0 +1,22 @@
+c900:
+  tmp:
+    type: s3aq
+    format: avro
+    bucket: com.aqfer.inc.tmp
+    base_path: /sandbox/work_area
+    credentials: default
+  raw_impressions:
+    type: s3aq
+    format: csv
+    bucket: com.aqfer.inc.tmp
+    base_path: /sandbox/sample_mapper/input
+    pattern: '*.csv'
+    credentials: default
+    options:
+      delimiter: "\t"
+  s3_avro_impression_v0_7:
+    type: s3aq
+    format: avro
+    bucket: com.aqfer.inc.tmp
+    base_path: /sandbox/sample_mapper/output
+    credentials: default

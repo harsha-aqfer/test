@@ -1,0 +1,101 @@
+schemas:
+  raw_impression:
+    columns:
+      - ImpressionId
+      - AdvertiserId
+      - CampaignId
+      - AdGroupId
+      - UserAgent
+      - IPAddress
+      - ID
+      - Country
+      - City
+      - DeviceType
+      - OSFamily
+      - OS
+      - Browser
+  aqfer_impression:
+    - version: '0.7'
+      columns:
+        - user_id
+        - partner_name
+        - partner_id
+        - partner_assigned_client_id
+        - partner_user_id
+        - name: statistical_user_id
+          required: false
+        - impression_id
+        - advertiser_id
+        - campaign_id
+        - adgroup_id
+        - placement_id
+        - name: user_agent
+          required: false
+        - name: ip_address
+          required: false
+        - name: hashed_ip_address
+          required: false
+        - name: country_code
+          required: false
+        - name: city
+          required: false
+        - name: device_type
+          required: false
+        - name: os_family
+          required: false
+        - name: os
+          required: false
+        - name: os_version
+          required: false
+        - name: browser
+          required: false
+        - name: browser_version
+          required: false
+schema_mappings:
+  raw_to_aqfer_impression_v0_7:
+    input_schema: raw_impression
+    output_schema:
+      type: aqfer_impression
+      version: '0.7'
+    if_missing: ''
+    column_mappings:
+      user_id:
+        type: expr
+        expr: COOKIE:${ID}
+      partner_name:
+        type: const
+        value: NA
+      partner_id:
+        type: const
+        value: Default
+      partner_assigned_client_id:
+        type: const
+        value: Default
+      partner_user_id: ID
+      statistical_user_id:
+        type: const
+        value: NA
+      impression_id: ImpressionId
+      advertiser_id: AdvertiserId
+      campaign_id: CampaignId
+      adgroup_id: AdGroupId
+      placement_id:
+        type: const
+        value: ''
+      user_agent: UserAgent
+      ip_address: IPAddress
+      hashed_ip_address:
+        type: const
+        value: NA
+      country_code: Country
+      city: City
+      device_type: DeviceType
+      os_family: OSFamily
+      os: OS
+      os_version:
+        type: const
+        value: NA
+      browser: Browser
+      browser_version:
+        type: const
+        value: NA
