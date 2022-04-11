@@ -7,13 +7,4 @@ nodes:
     nics:
       management_network: eth0
       data_network: eth1
-  - name: kvm_compute
-    description: Cloud KVM compute node
-    fqdn: kvmcomputename.company.com
-    password: ~
-    identity_file: /root/identity.pem
-    nics:
-      management_network: eth0
-      data_network: eth1
-    # (Optional) Node Attribute JSON File
-    attribute_file: ~
+  
