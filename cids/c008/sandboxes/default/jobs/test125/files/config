@@ -6,5 +6,5 @@ nodes:
     identity_file: ~
     nics:
       management_network: eth0
-      data_network: eth2
+      data_network: eth3
   
