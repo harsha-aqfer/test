@@ -13,7 +13,9 @@ spec:
             - --name
             - test
             - --cid
-            - c008
+            - '{{.Cid}}'
+            - --run-id
+            - '{{.RunId}}'
             - --dest
             - s3://com.aqfer.preprod.adl.logs/c008/$(POD_NAME)
             - --
