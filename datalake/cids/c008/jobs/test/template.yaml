@@ -14,8 +14,6 @@ spec:
             - test
             - --cid
             - c008
-            - --execution-id
-            - '4042'
             - --dest
             - s3://com.aqfer.preprod.adl.logs/c008/$(POD_NAME)
             - --
