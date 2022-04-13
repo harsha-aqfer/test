@@ -1,0 +1,54 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: thiru-test
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      activeDeadlineSeconds: 3600
+      containers:
+        - command:
+            - /opt/aqfer/log-wrap
+            - --name
+            - test
+            - --cid
+            - c008
+            - --execution-id
+            - '4042'
+            - --dest
+            - s3://com.aqfer.preprod.adl.logs/c008/$(POD_NAME)
+            - --
+            - ls
+            - -l
+          env:
+            - name: AWS_REGION
+              value: us-west-2
+            - name: AQFER_LAKEVIEW_HOST
+              value: lakeview.api-preprod.aqfer.net
+            - name: AQFER_REFRESH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: PREPROD_AUTH_REFRESH_TOKEN
+                  name: c008
+            - name: AQFER_REFRESH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: PREPROD_AUTH_REFRESH_TOKEN
+                  name: c008
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          image: 965106989073.dkr.ecr.us-west-2.amazonaws.com/adl-base:lite-v0.6.0
+          name: thiru-translate-ids
+          resources:
+            requests:
+              memory: 8Gi
+              cpu: 2000m
+      restartPolicy: Never
+      serviceAccountName: spark
