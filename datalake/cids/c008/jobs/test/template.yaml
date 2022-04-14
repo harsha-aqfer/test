@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: thiru-test
+  name: lakeview-test
 spec:
   backoffLimit: 0
   template:
@@ -11,16 +11,36 @@ spec:
         - command:
             - /opt/aqfer/log-wrap
             - --name
-            - test
+            - lakeview-test
             - --cid
             - '{{.Cid}}'
             - --run-id
             - '{{.RunId}}'
+            - --config
+            - s3://com.aqfer.preprod.tmp/adl/lakeview_test/c008/config.yaml
             - --dest
             - s3://com.aqfer.preprod.adl.logs/c008/$(POD_NAME)
+            - --credential-file
+            - /etc/opt/aqfer/credentials.yaml
             - --
-            - ls
-            - -l
+            - /opt/aqfer/hetero-collate
+            - driver
+            - --config-file
+            - /etc/opt/aqfer/config.yaml
+            - --credentials-file
+            - /etc/opt/aqfer/credentials.yaml
+            - --stage
+            - split
+            - --stage
+            - collate
+            - --stage
+            - sort
+            - --stage
+            - merge-plan
+            - --stage
+            - merge-do
+            - --stage
+            - transform
           env:
             - name: AWS_REGION
               value: us-west-2
@@ -45,7 +65,7 @@ spec:
                 fieldRef:
                   fieldPath: status.podIP
           image: 965106989073.dkr.ecr.us-west-2.amazonaws.com/adl-base:lite-v0.448.0
-          name: thiru-translate-ids
+          name: lakeview-test
           resources:
             requests:
               memory: 8Gi
