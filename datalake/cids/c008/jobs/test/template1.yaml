@@ -47,8 +47,7 @@ spec:
             - name: AQFER_LAKEVIEW_HOST
               value: lakeview.api-dev.aqfer.net
             - name: CONFIG_CONTENT
-              value: |
-                 {{.ConfigContent | indent 17}}
+              value: {{.ConfigContent | nindent 17}}
             - name: AQFER_REFRESH_TOKEN
               valueFrom:
                 secretKeyRef:
