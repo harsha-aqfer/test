@@ -19,7 +19,7 @@ spec:
             - --config
             - s3://com.aqfer.preprod.tmp/adl/lakeview_test/c008/config.yaml
             - --dest
-            - s3://com.aqfer.preprod.adl.logs/c008/$(POD_NAME)
+            - s3://{{.LogBucket}}/{{.Cid}}/$(POD_NAME)
             - --credential-file
             - /etc/opt/aqfer/credentials.yaml
             - --
