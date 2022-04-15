@@ -48,7 +48,7 @@ spec:
               value: lakeview.api-dev.aqfer.net
             - name: CONFIG_CONTENT
               value:
-                {{.ConfigContent}}
+                 {{.ConfigContent | indent 17}}
             - name: AQFER_REFRESH_TOKEN
               valueFrom:
                 secretKeyRef:
