@@ -49,12 +49,7 @@ spec:
             - name: AQFER_REFRESH_TOKEN
               valueFrom:
                 secretKeyRef:
-                  key: PREPROD_AUTH_REFRESH_TOKEN
-                  name: c008
-            - name: AQFER_REFRESH_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  key: PREPROD_AUTH_REFRESH_TOKEN
+                  key: DEV_AUTH_REFRESH_TOKEN
                   name: c008
             - name: PEPPER
               value: aqfer
