@@ -45,7 +45,7 @@ spec:
             - name: AWS_REGION
               value: us-west-2
             - name: AQFER_LAKEVIEW_HOST
-              value: lakeview.api-preprod.aqfer.net
+              value: lakeview.api-dev.aqfer.net
             - name: AQFER_REFRESH_TOKEN
               valueFrom:
                 secretKeyRef:
