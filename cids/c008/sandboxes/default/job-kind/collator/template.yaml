@@ -23,24 +23,7 @@ spec:
             - --credential-file
             - /etc/opt/aqfer/credentials.yaml
             - --
-            - /opt/aqfer/hetero-collate
-            - driver
-            - --config-file
-            - /etc/opt/aqfer/config.yaml
-            - --credentials-file
-            - /etc/opt/aqfer/credentials.yaml
-            - --stage
-            - split
-            - --stage
-            - collate
-            - --stage
-            - sort
-            - --stage
-            - merge-plan
-            - --stage
-            - merge-do
-            - --stage
-            - transform
+{{.UserParams.Executable | indent 12}} 
           env:
             - name: AWS_REGION
               value: us-west-2
