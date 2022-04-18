@@ -29,5 +29,5 @@ job_kinds:
             - transform
     sandbox_template: cids/{{.Cid}}/sandboxes/{{.SandboxName}}/job-kind/collator/template.yaml
     config_files:
-      - name: CONFIG_CONTENT
+      - name: ConfigContent
         path: cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/config.yaml
