@@ -23,7 +23,7 @@ spec:
             - --credential-file
             - /etc/opt/aqfer/credentials.yaml
             - --
-{{.UserParams.Executable | indent 12}}
+{{trimSuffix "\n" .UserParams.Executable | indent 12 }}
           env:
             - name: AWS_REGION
               value: us-west-2
