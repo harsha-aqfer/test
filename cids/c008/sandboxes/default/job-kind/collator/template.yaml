@@ -53,7 +53,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: DEV_AUTH_REFRESH_TOKEN
-                  name: c008
+                  name: "{{.Namespace}}"
             - name: PEPPER
               value: aqfer
             - name: POD_NAME
