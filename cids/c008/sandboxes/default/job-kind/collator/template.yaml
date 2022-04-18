@@ -1,0 +1,84 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{.JobName}}
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      activeDeadlineSeconds: 3600
+      containers:
+        - command:
+            - /opt/aqfer/log-wrap
+            - --name
+            - {{.JobName}}
+            - --cid
+            - {{.Cid}}
+            - --run-id
+            - {{.RunId}}
+            - --config
+            - s3://com.aqfer.preprod.tmp/adl/{{.Cid}}/{{.SandboxName}}/bundle.yaml
+            - --dest
+            - s3://{{.LogBucket}}/{{.Cid}}/{{.SandboxName}}/$(POD_NAME)
+            - --credential-file
+            - /etc/opt/aqfer/credentials.yaml
+            - --
+            - /opt/aqfer/hetero-collate
+            - driver
+            - --config-file
+            - /etc/opt/aqfer/config.yaml
+            - --credentials-file
+            - /etc/opt/aqfer/credentials.yaml
+            - --stage
+            - split
+            - --stage
+            - collate
+            - --stage
+            - sort
+            - --stage
+            - merge-plan
+            - --stage
+            - merge-do
+            - --stage
+            - transform
+          env:
+            - name: AWS_REGION
+              value: us-west-2
+            - name: AQFER_LAKEVIEW_HOST
+              value: lakeview.api-dev.aqfer.net
+            - name: CONFIG_CONTENT
+              value: | 
+                {{.UserParams.ConfigContent | nindent 4 | replace "\n" `\n`}}
+            - name: AQFER_REFRESH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: DEV_AUTH_REFRESH_TOKEN
+                  name: c008
+            - name: PEPPER
+              value: aqfer
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: BOT_AWS_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: BOT_AWS_ACCESS_KEY
+                  name: "{{.Namespace}}"
+            - name: BOT_AWS_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: BOT_AWS_SECRET_KEY
+                  name: "{{.Namespace}}"
+          image: 965106989073.dkr.ecr.us-west-2.amazonaws.com/adl-job:v1.1730.0
+          name: {{.JobName}}
+          resources:
+            requests:
+              cpu: 1
+              memory: 4Gi
+      restartPolicy: Never
+      serviceAccountName: spark
