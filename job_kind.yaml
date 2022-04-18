@@ -1,1 +1,33 @@
-
+job_kinds:
+  collator:
+    parameters:
+      fixed:
+        - name: Resources
+          value: |
+            requests:
+              cpu: 1
+              memory: 4Gi
+        - name: Executable
+          value: |
+            - /opt/aqfer/hetero-collate
+            - driver
+            - --config-file
+            - /etc/opt/aqfer/config.yaml
+            - --credentials-file
+            - /etc/opt/aqfer/credentials.yaml
+            - --stage
+            - split
+            - --stage
+            - collate
+            - --stage
+            - sort
+            - --stage
+            - merge-plan
+            - --stage
+            - merge-do
+            - --stage
+            - transform
+    sandbox_template: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/template.yaml
+    config_files:
+      - name: CONFIG_CONTENT
+        path: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/config.yaml
