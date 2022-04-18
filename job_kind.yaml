@@ -27,7 +27,7 @@ job_kinds:
             - merge-do
             - --stage
             - transform
-    sandbox_template: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/template.yaml
+    sandbox_template: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/job-kind/collator/template.yaml
     config_files:
       - name: CONFIG_CONTENT
         path: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/config.yaml
