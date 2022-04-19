@@ -30,7 +30,7 @@ apiVersion: batch/v1
       valueFrom:
         secretKeyRef:
           key: DEV_AUTH_REFRESH_TOKEN
-          name: c008
+          name: {{.Namespace}}
     - name: POD_NAME
       valueFrom:
         fieldRef:
