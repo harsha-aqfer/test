@@ -1,48 +1,48 @@
 apiVersion: batch/v1
-  kind: Job
-  metadata:
-    name: {{.JobName}}
-  spec:
-    backoffLimit: 0
-    template:
-      spec:
-        activeDeadlineSeconds: 3600
-        containers:
-          - command:
-              - /opt/aqfer/log-wrap
-              - --name
-              - {{.JobName}}
-              - --cid
-              - {{.Cid}}
-              - --run-id
-              - {{.RunId}}
-              - --config
-              - s3://com.aqfer.preprod.tmp/adl/lakeview_test/c008/config.yaml
-              - --dest
-              - s3://{{.LogBucket}}/{{.Cid}}/$(POD_NAME)
-              - --credential-file
-              - /etc/opt/aqfer/credentials.yaml
-              - --
-  env:
-    - name: AQFER_LAKEVIEW_HOST
-      value: lakeview.api-dev.aqfer.net
-    - name: AQFER_REFRESH_TOKEN
-      valueFrom:
-        secretKeyRef:
-          key: DEV_AUTH_REFRESH_TOKEN
-          name: {{.Namespace}}
-    - name: POD_NAME
-      valueFrom:
-        fieldRef:
-          fieldPath: metadata.name
-    - name: POD_IP
-      valueFrom:
-        fieldRef:
-          fieldPath: status.podIP
+kind: Job
+metadata:
   name: {{.JobName}}
-  restartPolicy: Never
-  resources:
-    requests:
-      cpu: 1
-      memory: 4Gi
-  serviceAccountName: spark
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      activeDeadlineSeconds: 3600
+      containers:
+        - command:
+            - /opt/aqfer/log-wrap
+            - --name
+            - {{.JobName}}
+            - --cid
+            - {{.Cid}}
+            - --run-id
+            - {{.RunId}}
+            - --config
+            - s3://com.aqfer.preprod.tmp/adl/lakeview_test/c008/config.yaml
+            - --dest
+            - s3://{{.LogBucket}}/{{.Cid}}/$(POD_NAME)
+            - --credential-file
+            - /etc/opt/aqfer/credentials.yaml
+            - --
+env:
+  - name: AQFER_LAKEVIEW_HOST
+    value: lakeview.api-dev.aqfer.net
+  - name: AQFER_REFRESH_TOKEN
+    valueFrom:
+      secretKeyRef:
+        key: DEV_AUTH_REFRESH_TOKEN
+        name: {{.Namespace}}
+  - name: POD_NAME
+    valueFrom:
+      fieldRef:
+        fieldPath: metadata.name
+  - name: POD_IP
+    valueFrom:
+      fieldRef:
+        fieldPath: status.podIP
+name: {{.JobName}}
+restartPolicy: Never
+resources:
+  requests:
+    cpu: 1
+    memory: 4Gi
+serviceAccountName: spark
