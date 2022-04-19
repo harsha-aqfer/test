@@ -1,52 +1,3 @@
-eks_template:
-  apiVersion: batch/v1
-  kind: Job
-  metadata:
-    name: {{.JobName}}
-  spec:
-    backoffLimit: 0
-    template:
-      spec:
-        activeDeadlineSeconds: 3600
-        containers:
-          - command:
-              - /opt/aqfer/log-wrap
-              - --name
-              - {{.JobName}}
-              - --cid
-              - {{.Cid}}
-              - --run-id
-              - {{.RunId}}
-              - --config
-              - s3://com.aqfer.preprod.tmp/adl/lakeview_test/c008/config.yaml
-              - --dest
-              - s3://{{.LogBucket}}/{{.Cid}}/$(POD_NAME)
-              - --credential-file
-              - /etc/opt/aqfer/credentials.yaml
-              - --
-  env:
-    - name: AQFER_LAKEVIEW_HOST
-      value: lakeview.api-dev.aqfer.net
-    - name: AQFER_REFRESH_TOKEN
-      valueFrom:
-        secretKeyRef:
-          key: DEV_AUTH_REFRESH_TOKEN
-          name: c008
-    - name: POD_NAME
-      valueFrom:
-        fieldRef:
-          fieldPath: metadata.name
-    - name: POD_IP
-      valueFrom:
-        fieldRef:
-          fieldPath: status.podIP
-  name: {{.JobName}}
-  restartPolicy: Never
-  resources:
-    requests:
-      cpu: 1
-      memory: 4Gi
-  serviceAccountName: spark
 job_kinds:
   collator:
     parameters:
@@ -99,6 +50,12 @@ job_kinds:
             - name: JOBCONF
               value: |
                 {{.UserParams.JobConf | nindent 4 | replace "\n" `\n`}}
+            - name: DATA_CHANNELS
+              value: |
+                {{.UserParams.DataChannels | nindent 4 | replace "\n" `\n`}}
+            - name: MAPPINGS
+              value: |
+                {{.UserParams.Mappings | nindent 4 | replace "\n" `\n`}}
         - name: "Spec.Template.Spec.Containers.0.Resources"
           value:
             requests:
@@ -107,24 +64,36 @@ job_kinds:
         - name: "Spec.Template.Spec.Containers.0.Command"
           mode: append
           value:
-            - /opt/aqfer/hetero-collate
-            - driver
-            - --config-file
-            - /etc/opt/aqfer/config.yaml
-            - --credentials-file
-            - /etc/opt/aqfer/credentials.yaml
-            - --stage
-            - split
-            - --stage
-            - collate
-            - --stage
-            - sort
-            - --stage
-            - merge-plan
-            - --stage
-            - merge-do
-            - --stage
-            - transform
+            - /opt/aqfer/k8s-spark
+            - run
+            - --stats-folder
+            - log-wrap
+            - --jars-folder
+            - /opt/aqfer
+            - -v
+            - --
+            - --driver-memory
+            - 1500M
+            - --executor-memory
+            - 2500M
+            - --name
+            - '{{.Cid}}-sandbox-mapper'
+            - --class
+            - com.aqfer.datalake.Main
+            - --conf
+            - spark.executor.instances=3
+            - --conf
+            - spark.yarn.executor.memoryOverhead=1024
+            - --conf
+            - spark.executorEnv.CONFIG_BUNDLE=s3://com.aqfer.preprod.config/adl/c008/sandbox-mapper/credentials.yaml
+            - /opt/aqfer/datalakeetl_2.11.jar
+            - file:///etc/opt/aqfer/jobconf.yaml
+            - '{{.Cid}}'
+            - sandbox-mapper
     config_files:
       - name: JobConf
-        path: cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/config.yaml
+        path: cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/jobconf.yaml
+      - name: DataChannels
+        path: cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/data_channels.yaml
+      - name: Mappings
+        path: cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/mappings.yaml
