@@ -2,11 +2,6 @@ job_kinds:
   collator:
     parameters:
       fixed:
-        - name: Config
-          value: |
-             - name: CONFIG_CONTENT
-               value: | 
-                 {{.UserParams.ConfigContent | nindent 4 | replace "\n" `\n`}}
           value: |
             requests:
               cpu: 1
