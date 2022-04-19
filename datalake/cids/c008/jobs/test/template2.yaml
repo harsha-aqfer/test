@@ -1,0 +1,130 @@
+eks_template:
+  apiVersion: batch/v1
+  kind: Job
+  metadata:
+    name: {{.JobName}}
+  spec:
+    backoffLimit: 0
+    template:
+      spec:
+        activeDeadlineSeconds: 3600
+        containers:
+          - command:
+              - /opt/aqfer/log-wrap
+              - --name
+              - {{.JobName}}
+              - --cid
+              - {{.Cid}}
+              - --run-id
+              - {{.RunId}}
+              - --config
+              - s3://com.aqfer.preprod.tmp/adl/lakeview_test/c008/config.yaml
+              - --dest
+              - s3://{{.LogBucket}}/{{.Cid}}/$(POD_NAME)
+              - --credential-file
+              - /etc/opt/aqfer/credentials.yaml
+              - --
+  env:
+    - name: AQFER_LAKEVIEW_HOST
+      value: lakeview.api-dev.aqfer.net
+    - name: AQFER_REFRESH_TOKEN
+      valueFrom:
+        secretKeyRef:
+          key: DEV_AUTH_REFRESH_TOKEN
+          name: c008
+    - name: POD_NAME
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.name
+    - name: POD_IP
+      valueFrom:
+        fieldRef:
+          fieldPath: status.podIP
+  name: {{.JobName}}
+  restartPolicy: Never
+  resources:
+    requests:
+      cpu: 1
+      memory: 4Gi
+  serviceAccountName: spark
+job_kinds:
+  collator:
+    parameters:
+      fixed:
+        - name: "Spec.Template.Spec.Containers.0.Image"
+          value: "965106989073.dkr.ecr.us-west-2.amazonaws.com/adl-job:v1.1730.0"
+        - name: "Spec.Template.Spec.Containers.0.Env"
+          mode: append
+          value:
+            - name: CONFIG_CONTENT
+              value: |
+                {{.UserParams.ConfigContent | nindent 4 | replace "\n" `\n`}}
+        - name: "Spec.Template.Spec.Containers.0.Resources"
+          value:
+            requests:
+              cpu: 1
+              memory: 4Gi
+        - name: "Spec.Template.Spec.Containers.0.Command"
+          mode: append
+          value:
+            - /opt/aqfer/hetero-collate
+            - driver
+            - --config-file
+            - /etc/opt/aqfer/config.yaml
+            - --credentials-file
+            - /etc/opt/aqfer/credentials.yaml
+            - --stage
+            - split
+            - --stage
+            - collate
+            - --stage
+            - sort
+            - --stage
+            - merge-plan
+            - --stage
+            - merge-do
+            - --stage
+            - transform
+    config_files:
+      - name: ConfigContent
+        path: cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/config.yaml
+  mapper:
+    parameters:
+      fixed:
+        - name: "Spec.Template.Spec.Containers.0.Image"
+          value: "965106989073.dkr.ecr.us-west-2.amazonaws.com/adl-job:v1.1730.0"
+        - name: "Spec.Template.Spec.Containers.0.Env"
+          mode: append
+          value:
+            - name: JOBCONF
+              value: |
+                {{.UserParams.JobConf | nindent 4 | replace "\n" `\n`}}
+        - name: "Spec.Template.Spec.Containers.0.Resources"
+          value:
+            requests:
+              cpu: 1
+              memory: 4Gi
+        - name: "Spec.Template.Spec.Containers.0.Command"
+          mode: append
+          value:
+            - /opt/aqfer/hetero-collate
+            - driver
+            - --config-file
+            - /etc/opt/aqfer/config.yaml
+            - --credentials-file
+            - /etc/opt/aqfer/credentials.yaml
+            - --stage
+            - split
+            - --stage
+            - collate
+            - --stage
+            - sort
+            - --stage
+            - merge-plan
+            - --stage
+            - merge-do
+            - --stage
+            - transform
+    config_files:
+      - name: JobConf
+        path: cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/config.yaml
