@@ -4,7 +4,12 @@ metadata:
   name: {{.JobName}}
 spec:
   backoffLimit: 0
+  completions: 1
+  parallelism: 1
   template:
+    metadata:
+      annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
     spec:
       activeDeadlineSeconds: 3600
       containers:
@@ -23,26 +28,27 @@ spec:
             - --credential-file
             - /etc/opt/aqfer/credentials.yaml
             - --
-env:
-  - name: AQFER_LAKEVIEW_HOST
-    value: lakeview.api-dev.aqfer.net
-  - name: AQFER_REFRESH_TOKEN
-    valueFrom:
-      secretKeyRef:
-        key: DEV_AUTH_REFRESH_TOKEN
-        name: {{.Namespace}}
-  - name: POD_NAME
-    valueFrom:
-      fieldRef:
-        fieldPath: metadata.name
-  - name: POD_IP
-    valueFrom:
-      fieldRef:
-        fieldPath: status.podIP
-name: {{.JobName}}
-restartPolicy: Never
-resources:
-  requests:
-    cpu: 1
-    memory: 4Gi
-serviceAccountName: spark
+          env:
+            - name: AQFER_LAKEVIEW_HOST
+              value: lakeview.api-dev.aqfer.net
+            - name: AQFER_REFRESH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: DEV_AUTH_REFRESH_TOKEN
+                  name: {{.Namespace}}
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          name: {{.JobName}}
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: 1
+              memory: 4Gi
+      restartPolicy: Never
+      serviceAccountName: spark
