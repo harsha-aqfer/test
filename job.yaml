@@ -135,7 +135,7 @@ job_kinds:
             - --conf
             - spark.yarn.executor.memoryOverhead=1024
             - --conf
-            - spark.executorEnv.CONFIG_BUNDLE=s3://com.aqfer.preprod.config/adl/c008/sandbox-mapper/credentials.yaml
+            - spark.executorEnv.CONFIG_BUNDLE=s3://com.aqfer.preprod.config/adl/{{.Cid}}/{{.SandboxName}}/credentials.yaml
             - /opt/aqfer/datalakeetl_2.11.jar
             - file:///etc/opt/aqfer/jobconf.yaml
             - '{{.Cid}}'
