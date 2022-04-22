@@ -18,7 +18,7 @@ eks_template: |
               - --run-id
               - {{.RunId}}
               - --config
-              - s3://com.aqfer.preprod.tmp/adl/lakeview_test/c008/config.yaml
+              - s3://com.aqfer.preprod.tmp/adl/{{.Cid}}/{{.SandboxName}}/bundle.yaml
               - --dest
               - s3://{{.LogBucket}}/{{.Cid}}/$(POD_NAME)
               - --credential-file
