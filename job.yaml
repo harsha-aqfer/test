@@ -20,7 +20,7 @@ eks_template: |
               - --config
               - s3://com.aqfer.preprod.tmp/adl/{{.Cid}}/{{.SandboxName}}/bundle.yaml
               - --dest
-              - s3://{{.LogBucket}}/{{.Cid}}/$(POD_NAME)
+              - s3://{{.LogBucket}}/{{.Cid}}/{{.SandboxName}}/$(POD_NAME)
               - --credential-file
               - /etc/opt/aqfer/credentials.yaml
               - --
