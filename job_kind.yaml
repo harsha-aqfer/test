@@ -30,8 +30,7 @@ job_kinds:
             - --stage
             - transform
     config_files:
-      - name: ConfigContent
-        path: cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/config.yaml
+      - cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/config.yaml
   mapper:
     parameters:
       fixed:
@@ -71,6 +70,6 @@ job_kinds:
             - '{{.Cid}}'
             - sandbox-mapper
     config_files:
-        path: cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/jobconf.yaml
-        path: cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/data_channels.yaml
-        path: cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/mappings.yaml
+      - cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/jobconf.yaml
+      - cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/data_channels.yaml
+      - cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/mappings.yaml
