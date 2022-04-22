@@ -4,12 +4,7 @@ metadata:
   name: {{.JobName}}
 spec:
   backoffLimit: 0
-  completions: 1
-  parallelism: 1
   template:
-    metadata:
-      annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
     spec:
       activeDeadlineSeconds: 3600
       containers:
@@ -22,14 +17,16 @@ spec:
             - --run-id
             - {{.RunId}}
             - --config
-            - {{.UserParams.ConfigPath}}
+            - {{.S3ConfigBundlePath}}
             - --dest
             - s3://{{.LogBucket}}/{{.Cid}}/{{.SandboxName}}/$(POD_NAME)
             - --credential-file
             - /etc/opt/aqfer/credentials.yaml
             - --
-{{trimSuffix "\n" .UserParams.Executable | indent 12 }}  
+{{trimSuffix "\n" .UserParams.Executable | indent 12 }}
           env:
+            - name: AWS_REGION
+              value: us-west-2
             - name: AQFER_LAKEVIEW_HOST
               value: lakeview.api-dev.aqfer.net
             - name: AQFER_REFRESH_TOKEN
@@ -37,6 +34,8 @@ spec:
                 secretKeyRef:
                   key: DEV_AUTH_REFRESH_TOKEN
                   name: {{.Namespace}}
+            - name: PEPPER
+              value: aqfer
             - name: POD_NAME
               valueFrom:
                 fieldRef:
@@ -45,10 +44,9 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
+          image: {{.UserParams.Image}}
           name: {{.JobName}}
-          image: ""
-          imagePullPolicy: IfNotPresent
           resources: |
-            {{trimSuffix "\n" .UserParams.Resources | indent 12 }}
+            {{.UserParams.Resources | nindent 12}}
       restartPolicy: Never
       serviceAccountName: spark
