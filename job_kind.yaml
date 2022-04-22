@@ -71,9 +71,6 @@ job_kinds:
             - '{{.Cid}}'
             - sandbox-mapper
     config_files:
-      - name: JobConf
         path: cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/jobconf.yaml
-      - name: DataChannels
         path: cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/data_channels.yaml
-      - name: Mappings
         path: cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/mappings.yaml
