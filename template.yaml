@@ -22,12 +22,13 @@ spec:
             - --run-id
             - {{.RunId}}
             - --config
-            - s3://com.aqfer.preprod.tmp/adl/lakeview_test/c008/config.yaml
+            - {{.UserParams.ConfigPath}}
             - --dest
             - s3://{{.LogBucket}}/{{.Cid}}/$(POD_NAME)
             - --credential-file
             - /etc/opt/aqfer/credentials.yaml
             - --
+{{trimSuffix "\n" .UserParams.Executable | indent 12 }}  
           env:
             - name: AQFER_LAKEVIEW_HOST
               value: lakeview.api-dev.aqfer.net
@@ -45,10 +46,9 @@ spec:
                 fieldRef:
                   fieldPath: status.podIP
           name: {{.JobName}}
+          image: ""
           imagePullPolicy: IfNotPresent
-          resources:
-            requests:
-              cpu: 1
-              memory: 4Gi
+          resources: |
+            {{trimSuffix "\n" .UserParams.Resources | indent 12 }}
       restartPolicy: Never
       serviceAccountName: spark
