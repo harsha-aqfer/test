@@ -4,7 +4,7 @@ job_kinds:
       fixed:
         - name: Image
           value: "965106989073.dkr.ecr.us-west-2.amazonaws.com/adl-job:v1.1730.0"
-        - name: Reources
+        - name: Resources
           value: |
             requests:
               cpu: 1
