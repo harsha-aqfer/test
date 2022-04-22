@@ -24,7 +24,7 @@ spec:
             - --config
             - {{.UserParams.ConfigPath}}
             - --dest
-            - s3://{{.LogBucket}}/{{.Cid}}/$(POD_NAME)
+            - s3://{{.LogBucket}}/{{.Cid}}/{{.SandboxName}}/$(POD_NAME)
             - --credential-file
             - /etc/opt/aqfer/credentials.yaml
             - --
