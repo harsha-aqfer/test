@@ -2,22 +2,15 @@ job_kinds:
   collator:
     parameters:
       fixed:
-        - name: "Spec.Template.Spec.Containers.0.Image"
+        - name: Image
           value: "965106989073.dkr.ecr.us-west-2.amazonaws.com/adl-job:v1.1730.0"
-        - name: "Spec.Template.Spec.Containers.0.Env"
-          mode: append
-          value:
-            - name: CONFIG_CONTENT
-              value: |
-                {{.UserParams.ConfigContent | nindent 4 | replace "\n" `\n`}}
-        - name: "Spec.Template.Spec.Containers.0.Resources"
-          value:
+        - name: Reources
+          value: |
             requests:
               cpu: 1
               memory: 4Gi
-        - name: "Spec.Template.Spec.Containers.0.Command"
-          mode: append
-          value:
+        - name: Executable
+          value: |
             - /opt/aqfer/hetero-collate
             - driver
             - --config-file
@@ -42,28 +35,15 @@ job_kinds:
   mapper:
     parameters:
       fixed:
-        - name: "Spec.Template.Spec.Containers.0.Image"
+        - name: Image
           value: "965106989073.dkr.ecr.us-west-2.amazonaws.com/adl-job:v1.1730.0"
-        - name: "Spec.Template.Spec.Containers.0.Env"
-          mode: append
-          value:
-            - name: JOBCONF
-              value: |
-                {{.UserParams.JobConf | nindent 4 | replace "\n" `\n`}}
-            - name: DATA_CHANNELS
-              value: |
-                {{.UserParams.DataChannels | nindent 4 | replace "\n" `\n`}}
-            - name: MAPPINGS
-              value: |
-                {{.UserParams.Mappings | nindent 4 | replace "\n" `\n`}}
-        - name: "Spec.Template.Spec.Containers.0.Resources"
-          value:
+        - name: Resources
+          value: |
             requests:
               cpu: 1
               memory: 4Gi
-        - name: "Spec.Template.Spec.Containers.0.Command"
-          mode: append
-          value:
+        - name: Executable
+          value: |
             - /opt/aqfer/k8s-spark
             - run
             - --stats-folder
@@ -85,7 +65,7 @@ job_kinds:
             - --conf
             - spark.yarn.executor.memoryOverhead=1024
             - --conf
-            - spark.executorEnv.CONFIG_BUNDLE=s3://com.aqfer.preprod.config/adl/c008/sandbox-mapper/credentials.yaml
+            - spark.executorEnv.CONFIG_BUNDLE=s3://com.aqfer.preprod.config/adl/{{.Cid}}/{{.SandboxName}}/credentials.yaml
             - /opt/aqfer/datalakeetl_2.11.jar
             - file:///etc/opt/aqfer/jobconf.yaml
             - '{{.Cid}}'
