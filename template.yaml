@@ -46,9 +46,6 @@ spec:
                   fieldPath: status.podIP
           image: {{.UserParams.Image}}
           name: {{.JobName}}
-          resources:
-            requests:
-              cpu: "6"
-              memory: 10Gi
+          resources: {{trimSuffix "\n" .UserParams.Resources | nindent 12}}
       restartPolicy: Never
       serviceAccountName: spark
