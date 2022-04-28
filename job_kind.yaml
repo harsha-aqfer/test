@@ -7,8 +7,8 @@ job_kinds:
         - name: Resources
           value: |
             requests:
-              cpu: 1
-              memory: 4Gi
+              cpu: 500m
+              memory: 400Mi
         - name: Executable
           value: |
             - /opt/aqfer/hetero-collate
