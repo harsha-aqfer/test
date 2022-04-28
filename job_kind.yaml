@@ -31,6 +31,7 @@ job_kinds:
             - transform
     config_files:
       - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/config.yaml
+      - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/credentials.yaml
   mapper:
     parameters:
       fixed:
@@ -73,3 +74,4 @@ job_kinds:
       - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/jobconf.yaml
       - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/data_channels.yaml
       - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/mappings.yaml
+      - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/credentials.yaml
