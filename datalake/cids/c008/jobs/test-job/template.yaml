@@ -19,7 +19,7 @@ spec:
             - --config
             - s3://com.aqfer.dev.packages/c008/default/test25/bundle.yaml
             - --dest
-            - s3://{{.LogBucket}}/{{.Cid}}/{{.Namespace}}/$(POD_NAME)
+            - s3://{{.LogBucket}}/{{.Cid}}/$(POD_NAME)
             - --credential-file
             - /etc/opt/aqfer/credentials.yaml
             - --
