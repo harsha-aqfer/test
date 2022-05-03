@@ -17,7 +17,7 @@ spec:
             - --run-id
             - {{.RunId}}
             - --config
-            - {{.S3ConfigBundlePath}}
+            - {{.ConfigBundleS3Path}}
             - --dest
             - s3://{{.LogBucket}}/{{.Cid}}/{{.Namespace}}/$(POD_NAME)
             - --credential-file
