@@ -1,4 +1,4 @@
-eks_template: |
+k8s_job_template: |
   apiVersion: batch/v1
   kind: Job
   metadata:
@@ -18,56 +18,52 @@ eks_template: |
               - --run-id
               - {{.RunId}}
               - --config
-              - s3://com.aqfer.preprod.tmp/adl/{{.Cid}}/{{.SandboxName}}/bundle.yaml
+              - {{.ConfigBundleS3Path}}
               - --dest
-              - s3://{{.LogBucket}}/{{.Cid}}/{{.SandboxName}}/$(POD_NAME)
+              - s3://{{.LogBucket}}/{{.Cid}}/{{.Namespace}}/$(POD_NAME)
               - --credential-file
               - /etc/opt/aqfer/credentials.yaml
               - --
-  env:
-    - name: AQFER_LAKEVIEW_HOST
-      value: lakeview.api-dev.aqfer.net
-    - name: AQFER_REFRESH_TOKEN
-      valueFrom:
-        secretKeyRef:
-          key: DEV_AUTH_REFRESH_TOKEN
-          name: {{.Cid}}
-    - name: POD_NAME
-      valueFrom:
-        fieldRef:
-          fieldPath: metadata.name
-    - name: POD_IP
-      valueFrom:
-        fieldRef:
-          fieldPath: status.podIP
-  name: {{.JobName}}
-  restartPolicy: Never
-  resources:
-    requests:
-      cpu: 1
-      memory: 4Gi
-  serviceAccountName: spark
-  
+  {{trimSuffix "\n" .UserParams.Executable | indent 12 }}
+            env:
+              - name: AWS_REGION
+                value: us-west-2
+              - name: AQFER_LAKEVIEW_HOST
+                value: lakeview.api-dev.aqfer.net
+              - name: AQFER_REFRESH_TOKEN
+                valueFrom:
+                  secretKeyRef:
+                    key: DEV_AUTH_REFRESH_TOKEN
+                    name: {{.Namespace}}
+              - name: PEPPER
+                value: aqfer
+              - name: POD_NAME
+                valueFrom:
+                  fieldRef:
+                    fieldPath: metadata.name
+              - name: POD_IP
+                valueFrom:
+                  fieldRef:
+                    fieldPath: status.podIP
+            image: {{.UserParams.Image}}
+            name: {{.JobName}}
+            resources: {{trimSuffix "\n" .UserParams.Resources | nindent 12}}
+        restartPolicy: Never
+        serviceAccountName: spark
+
 job_kinds:
   collator:
     parameters:
       fixed:
-        - name: "Spec.Template.Spec.Containers.0.Image"
-          value: "965106989073.dkr.ecr.us-west-2.amazonaws.com/adl-job:v1.1730.0"
-        - name: "Spec.Template.Spec.Containers.0.Env"
-          mode: append
-          value:
-            - name: CONFIG_CONTENT
-              value: |
-                {{.UserParams.ConfigContent | nindent 4 | replace "\n" `\n`}}
-        - name: "Spec.Template.Spec.Containers.0.Resources"
-          value:
+        - name: Image
+          value: "965106989073.dkr.ecr.us-west-2.amazonaws.com/adl-uncertified:1.1800.0"
+        - name: Resources
+          value: |
             requests:
-              cpu: 1
-              memory: 4Gi
-        - name: "Spec.Template.Spec.Containers.0.Command"
-          mode: append
-          value:
+              cpu: 500m
+              memory: 400Mi
+        - name: Executable
+          value: |
             - /opt/aqfer/hetero-collate
             - driver
             - --config-file
@@ -87,33 +83,20 @@ job_kinds:
             - --stage
             - transform
     config_files:
-      - name: ConfigContent
-        path: cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/config.yaml
+      - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/config.yaml
+      - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/credentials.yaml
   mapper:
     parameters:
       fixed:
-        - name: "Spec.Template.Spec.Containers.0.Image"
-          value: "965106989073.dkr.ecr.us-west-2.amazonaws.com/adl-job:v1.1730.0"
-        - name: "Spec.Template.Spec.Containers.0.Env"
-          mode: append
-          value:
-            - name: JOBCONF
-              value: |
-                {{.UserParams.JobConf | nindent 4 | replace "\n" `\n`}}
-            - name: DATA_CHANNELS
-              value: |
-                {{.UserParams.DataChannels | nindent 4 | replace "\n" `\n`}}
-            - name: MAPPINGS
-              value: |
-                {{.UserParams.Mappings | nindent 4 | replace "\n" `\n`}}
-        - name: "Spec.Template.Spec.Containers.0.Resources"
-          value:
+        - name: Image
+          value: "965106989073.dkr.ecr.us-west-2.amazonaws.com/adl-uncertified:1.1800.0"
+        - name: Resources
+          value: |
             requests:
               cpu: 1
               memory: 4Gi
-        - name: "Spec.Template.Spec.Containers.0.Command"
-          mode: append
-          value:
+        - name: Executable
+          value: |
             - /opt/aqfer/k8s-spark
             - run
             - --stats-folder
@@ -141,9 +124,8 @@ job_kinds:
             - '{{.Cid}}'
             - sandbox-mapper
     config_files:
-      - name: JobConf
-        path: cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/jobconf.yaml
-      - name: DataChannels
-        path: cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/data_channels.yaml
-      - name: Mappings
-        path: cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/mappings.yaml
+      - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/jobconf.yaml
+      - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/data_channels.yaml
+      - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/mappings.yaml
+      - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/credentials.yaml
+override_job_template: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/template.yaml
