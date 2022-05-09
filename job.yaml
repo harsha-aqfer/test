@@ -35,6 +35,16 @@ k8s_job_template: |
                   secretKeyRef:
                     key: DEV_AUTH_REFRESH_TOKEN
                     name: {{.Namespace}}
+              - name: BOT_AWS_ACCESS_KEY
+                valueFrom:
+                  secretKeyRef:
+                    key: BOT_AWS_ACCESS_KEY
+                    name: "c008"
+            - name: BOT_AWS_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: BOT_AWS_SECRET_KEY
+                  name: "c008"
               - name: PEPPER
                 value: aqfer
               - name: POD_NAME
