@@ -2,8 +2,8 @@
     c008:
       default:
         type: aws
-        access_key: ${BOT_AWS_ACCESS_KEY}
-        secret_key: ${BOT_AWS_SECRET_KEY}
+        access_key: AKIAS7BMEMUKIF3RJLOP
+        secret_key: 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
         region: us-west-2
         role_arn: arn:aws:iam::965106989073:role/DevelopersAccessRole
   format: yaml
