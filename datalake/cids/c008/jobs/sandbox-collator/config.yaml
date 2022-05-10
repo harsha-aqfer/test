@@ -1,0 +1,16 @@
+- contents:
+    c008:
+      default:
+        type: aws
+        access_key: ${BOT_AWS_ACCESS_KEY}
+        secret_key: ${BOT_AWS_SECRET_KEY}
+        region: us-west-2
+        role_arn: arn:aws:iam::965106989073:role/DevelopersAccessRole
+  format: yaml
+  path: /etc/opt/aqfer/credentials.yaml
+  permission: 400
+- contents: {{replaceAll (env "CONFIG_CONTENT") `\n` "\n"}}
+    work_area: s3://c008.default@com.aqfer.preprod.tmp/amdp-services/collator/work_area/{{env "POD_NAME"}}
+  format: yaml
+  path: /etc/opt/aqfer/config.yaml
+  permission: 400
