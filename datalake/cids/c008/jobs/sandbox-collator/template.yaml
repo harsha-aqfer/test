@@ -17,7 +17,7 @@ spec:
             - --run-id
             - {{.RunId}}
             - --config
-            - s3://com.aqfer.dev.packages/c008/default/test25/bundle.yaml
+            - s3://com.aqfer.dev.packages/c008/sandbox/bundle.yaml
             - --dest
             - s3://{{.LogBucket}}/{{.Cid}}/$(POD_NAME)
             - --credential-file
