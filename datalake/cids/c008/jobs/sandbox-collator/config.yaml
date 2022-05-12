@@ -11,6 +11,25 @@
   permission: 400
 - contents: {{replaceAll (env "CONFIG_CONTENT") `\n` "\n"}}
     work_area: s3://c008.default@com.aqfer.preprod.tmp/amdp-services/collator/work_area/{{env "POD_NAME"}}
+    capacity:
+      collate_stage:
+        in_proc_executor:
+          num_workers: 10
+      merge_do_stage:
+        in_proc_executor:
+          num_workers: 10
+      merge_plan_stage:
+        in_proc_executor:
+          num_workers: 10
+      sort_stage:
+        in_proc_executor:
+          num_workers: 10
+      split_stage:
+        in_proc_executor:
+          num_workers: 10
+      transform_stage:
+        in_proc_executor:
+          num_workers: 10
   format: yaml
   path: /etc/opt/aqfer/config.yaml
   permission: 400
