@@ -9,7 +9,7 @@
   format: yaml
   path: /etc/opt/aqfer/credentials.yaml
   permission: 400
-- contents: {{replaceAll (env "CONFIG_CONTENT") `\n` "\n"}}
+- contents: 
     work_area: s3://c008.default@com.aqfer.preprod.tmp/amdp-services/collator/work_area/{{env "POD_NAME"}}
     capacity:
       collate_stage:
