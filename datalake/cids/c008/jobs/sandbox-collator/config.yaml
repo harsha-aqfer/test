@@ -11,6 +11,7 @@
   permission: 400
 - contents: 
     work_area: s3://c008.default@com.aqfer.preprod.tmp/amdp-services/collator/work_area/{{env "POD_NAME"}}
+    {{replaceAll (env "CONFIG_CONTENT") `\n` "\n"}}
     capacity:
       collate_stage:
         in_proc_executor:
