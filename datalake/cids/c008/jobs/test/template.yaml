@@ -16,14 +16,12 @@ spec:
             - {{.Cid}}
             - --run-id
             - {{.RunId}}
-            - --config
-            - {{.S3ConfigBundlePath}}
             - --dest
-            - s3://{{.LogBucket}}/{{.Cid}}/{{.SandboxName}}/$(POD_NAME)
-            - --credential-file
-            - /etc/opt/aqfer/credentials.yaml
+            - s3://com.aqfer.preprod.adl.logs/c008/$(POD_NAME)
             - --
-{{trimSuffix "\n" .UserParams.Executable | indent 12 }}
+            - sleep
+            - 60
+            - ls
           env:
             - name: AWS_REGION
               value: us-west-2
@@ -32,10 +30,13 @@ spec:
             - name: AQFER_REFRESH_TOKEN
               valueFrom:
                 secretKeyRef:
+                  key: PREPROD_AUTH_REFRESH_TOKEN
+                  name: c008
+            - name: AQFER_REFRESH_TOKEN
+              valueFrom:
+                secretKeyRef:
                   key: DEV_AUTH_REFRESH_TOKEN
-                  name: {{.Namespace}}
-            - name: PEPPER
-              value: aqfer
+                  name: c008
             - name: POD_NAME
               valueFrom:
                 fieldRef:
@@ -44,9 +45,11 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
-          image: {{.UserParams.Image}}
-          name: {{.JobName}}
-          resources: |
-            {{.UserParams.Resources | nindent 12}}
+          image: 965106989073.dkr.ecr.us-west-2.amazonaws.com/adl-job:preprod
+          name: thiru-translate-ids
+          resources:
+            requests:
+              memory: 8Gi
+              cpu: 2000m
       restartPolicy: Never
       serviceAccountName: spark
