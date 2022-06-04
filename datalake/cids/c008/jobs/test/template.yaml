@@ -49,7 +49,7 @@ spec:
           name: thiru-translate-ids
           resources:
             requests:
-              memory: 8Gi
-              cpu: 2000m
+              memory: 400Mi
+              cpu: 500m
       restartPolicy: Never
       serviceAccountName: spark
