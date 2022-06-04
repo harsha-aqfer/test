@@ -17,7 +17,7 @@ spec:
             - --run-id
             - {{.RunId}}
             - --dest
-            - s3://com.aqfer.preprod.adl.logs/c008/$(POD_NAME)
+            - s3://com.aqfer-dev.tmp/c008/$(POD_NAME)
             - --
             - sleep
             - 60
