@@ -45,7 +45,7 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
-          image: 965106989073.dkr.ecr.us-west-2.amazonaws.com/adl-job:preprod
+          image: 965106989073.dkr.ecr.us-west-2.amazonaws.com/adl-uncertified:1.1866.0
           name: thiru-translate-ids
           resources:
             requests:
