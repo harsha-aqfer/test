@@ -19,7 +19,8 @@ spec:
             - --dest
             - s3://com.aqfer-dev.tmp/c008/$(POD_NAME)
             - --
-            - sleep 60 && ls
+            - sleep
+            - 60
           env:
             - name: AWS_REGION
               value: us-west-2
