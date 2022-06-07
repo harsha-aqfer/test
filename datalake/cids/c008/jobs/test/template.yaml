@@ -26,6 +26,8 @@ spec:
           env:
             - name: AWS_REGION
               value: us-west-2
+            - name: a
+              value: {{.UserParams.a}}
             - name: AQFER_LAKEVIEW_HOST
               value: lakeview.api-dev.aqfer.net
             - name: AQFER_REFRESH_TOKEN
