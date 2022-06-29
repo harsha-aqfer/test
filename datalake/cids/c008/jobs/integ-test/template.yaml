@@ -30,6 +30,8 @@ spec:
               value: us-west-2
             - name: AQFER_LAKEVIEW_HOST
               value: https://auth.api-dev.aqfer.net
+            - name: SANDBOX
+              value: {{.Sandbox}}
             - name: AQFER_REFRESH_TOKEN
               valueFrom:
                 secretKeyRef:
