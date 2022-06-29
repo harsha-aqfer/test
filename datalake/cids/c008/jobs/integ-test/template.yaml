@@ -1,0 +1,53 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{.JobName}}
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      activeDeadlineSeconds: 3600
+      containers:
+        - command:
+            - /opt/aqfer/log-wrap
+            - --name
+            - {{.JobName}}
+            - --cid
+            - {{.Cid}}
+            - --run-id
+            - {{.RunId}}
+            - --dest
+            - s3://{{.LogBucket}}/{{.Cid}}/$(POD_NAME)
+            - --lakeview-domain
+            - lakeview.api-dev.aqfer.net
+            - --auth-domain
+            - auth.api-dev.aqfer.net
+            - --
+            - sleep
+            - 60
+          env:
+            - name: AWS_REGION
+              value: us-west-2
+            - name: AQFER_LAKEVIEW_HOST
+              value: https://auth.api-dev.aqfer.net
+            - name: AQFER_REFRESH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: PREPROD_AUTH_REFRESH_TOKEN
+                  name: {{.Cid}}
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          image: 965106989073.dkr.ecr.us-west-2.amazonaws.com/adl-uncertified:lite-v0.503.0
+          name: {{.JobName}}
+          resources:
+            requests:
+              memory: 400Mi
+              cpu: 500m
+      restartPolicy: Never
+      serviceAccountName: spark
