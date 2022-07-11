@@ -18,6 +18,10 @@ spec:
             - {{.RunId}}
             - --dest
             - s3://{{.LogBucket}}/{{.Cid}}/$(POD_NAME)
+            - --lakeview-domain
+            - lakeview.api-dev.aqfer.net
+            - --auth-domain
+            - auth.api-dev.aqfer.net
             - --
             - sleep
             - 60
