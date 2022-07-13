@@ -23,11 +23,11 @@ spec:
             - --auth-domain
             - auth.api-dev.aqfer.net
             - --
-            - echo 
-            - "Hello World!"
-            - ";"
-            - sleep
-            - "60"
+            - sh
+            - -c
+            - |
+              echo "Hello World!"
+              sleep "60"
           env:
             - name: AQFER_LAKEVIEW_HOST
               value: https://lakeview.api-dev.aqfer.net
