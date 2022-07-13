@@ -16,6 +16,8 @@ spec:
             - {{.Cid}}
             - --run-id
             - {{.RunId}}
+            - --config
+            - s3://com.aqfer.dev.packages/adl/{{.Cid}}/{{.JobName}}/bundle.yaml
             - --dest
             - s3://{{.LogBucket}}/{{.Cid}}/$(POD_NAME)
             - --lakeview-domain
@@ -26,6 +28,7 @@ spec:
             - sh
             - -c
             - |
+              cp /etc/opt/aqfer/result.yaml .
               echo "Hello World!"
               sleep "60"
           env:
