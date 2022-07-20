@@ -1,1 +1,27 @@
-
+---
+Ingestion:
+  - copy_files
+  - ctas
+  - event_import
+  - event_summary
+  - id_sync
+  - import_id_for_id_sync
+  - join_ctas
+  - split_gzip_files
+Collation:
+  - collate_merge
+  - collate_sort
+  - collated_merge
+  - event_collation
+Analysis:
+  - analysis_service
+  - attribution
+  - semisum
+Others:
+  - distribution
+  - export_id_for_id_sync
+  - import_atm_counts
+  - latency
+  - parse_receipts
+  - publish_job_metrics
+  - test_event_import
