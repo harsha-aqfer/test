@@ -1,1 +1,287 @@
-
+c009:
+  jobs:
+    merge_collated:
+        type: collated_merge
+        input:
+        - event_type: subevent
+          data_channel: s3_avro_unmerged
+          partition_keys:
+          - name: batch_id
+            value: "*"
+          checkpoint:
+            type: move
+            destination:
+              success: _archive
+        - event_type: collated
+          data_channel: s3_avro_collated_hourly
+          partition_keys:
+          - name: event_date
+            value: ${date}
+          - name: partition_hour
+            value: "*"
+          - name: runid
+            value: "*"
+        output:
+        - event_type: subevent
+          use_lock: true
+          data_channels:
+          - s3_avro_unmerged
+        - event_type: collated
+          data_channels:
+          - collation_daily
+        - event_type: collated
+          data_channels:
+          - collation_daily_athena
+    collate_events:
+        type: event_collation
+        input:
+        - event_type: impression
+          data_channel: s3_avro_impression_v0_7
+          partition_keys:
+          - name: event_date
+            value: "*"
+          - name: event_hour
+            value: "*"
+          - name: runid
+            value: "*"
+          checkpoint:
+            type: move
+            destination:
+              success: _archive
+        - event_type: subevent
+          data_channel: s3_avro_patch_ttd
+          partition_keys:
+          - name: runid
+            value: "*"
+          checkpoint:
+            type: move
+            destination:
+              success: _archive
+        - event_type: subevent
+          data_channel: s3_avro_patch_ttd
+          partition_keys:
+          - name: batch_id
+            value: "*"
+          checkpoint:
+            type: move
+            destination:
+              success: _archive
+        - event_type: conversion
+          data_channel: s3_avro_conversion
+          partition_keys:
+          - name: event_date
+            value: "*"
+          - name: event_hour
+            value: "*"
+          - name: runid
+            value: "*"
+          checkpoint:
+            type: move
+            destination:
+              success: _archive
+        - event_type: subevent
+          data_channel: s3_avro_unmerged
+          partition_keys:
+          - name: batch_id
+            value: "*"
+          checkpoint:
+            type: move
+            destination:
+              success: _archive
+        output:
+        - event_type: subevent
+          use_lock: true
+          data_channels:
+          - s3_avro_unmerged
+        - event_type: collated
+          data_channels:
+          - s3_avro_collated_hourly
+    import_conversions:
+        type: event_import
+        partner: TheTradeDesk
+        mode: append
+        event_type: conversion
+        partition_count: 100
+        input:
+        - event_type: conversion
+          source: TTD_NEW
+          options:
+            dateHour:
+              type: DateHour
+              value: ${date_hour}
+          data_channel: ttd_conversions
+          checkpoint:
+            type: date_hour_partitioned
+            data_channel: ttd_conversion_checkpoint
+            window_hours: 50
+            alert_window_hours: 50
+        enhancers: []
+        output:
+        - event_type: conversion
+          data_channels:
+          - s3_avro_conversion
+    import_conversions_test:
+      type: test_event_import
+      partner: TheTradeDesk
+      mode: append
+      event_type: conversion
+      partition_count: 100
+      golden_data_channel:
+        event_type: conversion
+        data_channel: s3_avro_conversions_test_gold
+        partition_keys:
+        - name: event_date
+          value: "*"
+        - name: event_hour
+          value: "*"
+        - name: runid
+          value: "*"
+      input:
+      - event_type: conversion
+        source: TTD_NEW
+        data_channel: ttd_conversions_test_input
+        partition_keys:
+        - name: date
+          value: "*"
+        - name: hour
+          value: "*"
+      enhancers: []
+      output:
+      - event_type: conversion
+        data_channels:
+        - s3_avro_conversions_test_out
+    import_subevents:
+      type: event_import
+      partner: TheTradeDesk
+      event_type: subevent
+      mode: append
+      partition_count: 100
+      input:
+        - event_type: click_subevent
+          source: TTD_NEW
+          options:
+            dateHour:
+              type: DateHour
+              value: ${date_hour}
+          data_channel: ttd_clicks
+          checkpoint:
+            type: date_hour_partitioned
+            data_channel: ttd_click_checkpoint
+            window_hours: 50
+            alert_window_hours: 50
+      output:
+      - event_type: subevent
+        data_channels:
+        - s3_avro_patch_ttd
+    import_subevents_test:
+      type: test_event_import
+      partner: TheTradeDesk
+      mode: append
+      event_type: subevent
+      partition_count: 100
+      golden_data_channel:
+        event_type: subevent
+        data_channel: s3_avro_subevents_test_gold
+        partition_keys:
+          - name: batch_id
+            value: "*"
+      input:
+        - event_type: click_subevent
+          source: TTD_NEW
+          data_channel: ttd_clicks_test_input
+          partition_keys:
+            - name: date
+              value: "*"
+            - name: hour
+              value: "*"
+        - event_type: video_subevent
+          source: TTD_NEW
+          data_channel: ttd_videos_test_input
+          partition_keys:
+            - name: date
+              value: "*"
+            - name: hour
+              value: "*"
+      enhancers: []
+      output:
+        - event_type: subevent
+          data_channels:
+            - s3_avro_subevents_test_out
+    import_impressions:
+      type: event_import
+      partner: TheTradeDesk
+      mode: append
+      event_type: impression
+      partition_count: 100
+      enhancers:
+      - group: Aqfer
+        name: ua_parser
+        data_channels:
+          - name: ua_map
+      input:
+      - event_type: impression
+        source: TTD_NEW
+        options:
+          dateHour:
+            type: DateHour
+            value: ${date_hour}
+        data_channel: ttd_impressions
+        checkpoint:
+          type: date_hour_partitioned
+          data_channel: ttd_impression_checkpoint
+          window_hours: 50
+          alert_window_hours: 50
+      output:
+      - event_type: impression
+        data_channels:
+        - s3_avro_impression_v0_7
+    import_impressions_test:
+      type: test_event_import
+      partner: TheTradeDesk
+      mode: append
+      event_type: impression
+      partition_count: 100
+      publish_metrics: false
+      golden_data_channel:
+        event_type: impression
+        data_channel: s3_avro_impressions_test_gold
+        partition_keys:
+          - name: event_date
+            value: "*"
+          - name: event_hour
+            value: "*"
+          - name: runid
+            value: "*"
+      input:
+        - event_type: impression
+          source: TTD_NEW
+          data_channel: ttd_impressions_test_input
+          partition_keys:
+            - name: date
+              value: "*"
+            - name: hour
+              value: "*"
+      enhancers: []
+      output:
+        - event_type: impression
+          data_channels:
+            - s3_avro_impressions_test_out
+    generate_attribution:
+      type: attribution
+      lookback_window_days: 60
+      dedup_window_ms: 60000
+      input:
+        - event_type: collated
+          data_channel: collation_daily
+          partition_keys:
+            - name: event_date
+              value: ${date}
+            - name: partition_hour
+              value: "*"
+            - name: runid
+              value: "*"
+      output:
+        - event_type: attribution
+          data_channels:
+            - attribution_hive
+            - attribution_athena
