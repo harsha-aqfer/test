@@ -1,0 +1,65 @@
+---
+stack_name: c009-adl-job-schedules
+region: us-west-2
+template_file: '../cfm/cloudwatch-event-v3.yaml'
+parameters:
+  - ParameterKey: image
+    ParameterValue: ${IMAGE_REPO}
+  - ParameterKey: imageTag
+    ParameterValue: v${IMAGE_VER}
+resources:
+  TemplateA:
+    - parameters:
+        jobName: import_impressions
+        jobNameLabel: import-impressions
+        schedNameLabel: ImportImpressions
+        numExecutors: 2
+        driverMemory: 1500M
+        executorMemory: 1500M
+        scheduleExpression: cron(30 8 * * ? *)
+    - parameters:
+        jobName: import_conversions
+        jobNameLabel: import-conversions
+        schedNameLabel: ImportConversions
+        numExecutors: 2
+        driverMemory: 1500M
+        executorMemory: 1500M
+        scheduleExpression: cron(25 8 * * ? *)
+    - parameters:
+        jobName: import_subevents
+        jobNameLabel: import-subevents
+        schedNameLabel: ImportSubevents
+        numExecutors: 2
+        driverMemory: 1500M
+        executorMemory: 1500M
+        scheduleExpression: cron(35 8 * * ? *)
+    - parameters:
+        jobName: collate_events
+        jobNameLabel: collate-events
+        schedNameLabel: CollateEvents
+        numExecutors: 4
+        driverMemory: 3500M
+        executorMemory: 4000M
+        scheduleExpression: cron(55 8 * * ? *)
+    - parameters:
+        jobName: merge_collated
+        jobNameLabel: merge-collated
+        schedNameLabel: MergeCollated
+        numExecutors: 4
+        driverMemory: 3500M
+        executorMemory: 4000M
+        scheduleExpression: cron(40 12 * * ? *)
+    - parameters:
+        jobName: generate_attribution
+        jobNameLabel: generate-attribution
+        schedNameLabel: GenerateAttribution
+        numExecutors: 3
+        driverMemory: 1900M
+        executorMemory: 1500M
+        scheduleExpression: cron(30 13 * * ? *)                       
+  TemplateB:
+    - parameters:
+        jobNameLabel: produce-sample-data
+        schedNameLabel: ProduceSampleData
+        scheduleExpression: cron(5 0 * * ? *)
+        jobClassName: com.aqfer.datalake.tools.ProduceSampleData
