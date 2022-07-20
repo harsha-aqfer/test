@@ -1,0 +1,108 @@
+---
+Namespace: aqfer/adl_jobs
+Enabled: true
+MetricName: Status
+Period: 60
+EvaluationPeriods: 1440
+DatapointsToAlarm: 1
+DefaultAction: aDLSNSTopicARN
+CriticalAction: aDLCriticalSNSTopicARN
+Alarms:
+  - Name: c009_produce_sample_data_missing
+    Type: MISSING
+    Dimensions:
+      jobName: produce-sample-data
+    Period: 3600
+    EvaluationPeriods: 24
+    Enabled: true
+    Critical: true
+  - Name: c009_produce_sample_data_failure
+    Type: FAILURE
+    Dimensions:
+      jobName: produce-sample-data
+    Enabled: true
+    Critical: true
+  - Name: c009_import_impressions_missing
+    Type: MISSING
+    Dimensions:
+      jobName: import_impressions
+    Period: 3600
+    EvaluationPeriods: 24
+    Enabled: true
+    Critical: true
+  - Name: c009_import_impressions_failure
+    Type: FAILURE
+    Dimensions:
+      jobName: import_impressions
+    Enabled: true
+    Critical: true
+  - Name: c009_import_conversions_missing
+    Type: MISSING
+    Dimensions:
+      jobName: import_conversions
+    Period: 3600
+    EvaluationPeriods: 24
+    Enabled: true
+    Critical: true
+  - Name: c009_import_conversions_failure
+    Type: FAILURE
+    Dimensions:
+      jobName: import_conversions
+    Enabled: true
+    Critical: true   
+  - Name: c009_import_subevents_missing
+    Type: MISSING
+    Dimensions:
+      jobName: import_subevents
+    Period: 3600
+    EvaluationPeriods: 24
+    Enabled: true
+    Critical: true
+  - Name: c009_import_subevents_failure
+    Type: FAILURE
+    Dimensions:
+      jobName: import_subevents
+    Enabled: true
+    Critical: true            
+  - Name: c009_collate_events_missing
+    Type: MISSING
+    Dimensions:
+      jobName: collate_events
+    Period: 3600
+    EvaluationPeriods: 24
+    Enabled: true
+    Critical: true
+  - Name: c009_collate_events_failure
+    Type: FAILURE
+    Dimensions:
+      jobName: collate_events
+    Enabled: true
+    Critical: true            
+  - Name: c009_merge_collated_missing
+    Type: MISSING
+    Dimensions:
+      jobName: merge_collated
+    Period: 3600
+    EvaluationPeriods: 24
+    Enabled: true
+    Critical: true
+  - Name: c009_merge_collated_failure
+    Type: FAILURE
+    Dimensions:
+      jobName: merge_collated
+    Enabled: true
+    Critical: true     
+  - Name: c009_generate_attribution_missing
+    Type: MISSING
+    Dimensions:
+      jobName: generate_attribution
+    Period: 3600
+    EvaluationPeriods: 24
+    Enabled: true
+    Critical: true
+  - Name: c009_generate_attribution_failure
+    Type: FAILURE
+    Dimensions:
+      jobName: generate_attribution
+    Enabled: true
+    Critical: true
