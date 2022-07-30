@@ -9,11 +9,6 @@ spec:
       activeDeadlineSeconds: 3600
       containers:
         - command:
-            - sh
-            - -c
-            - |
-              echo "Hello World!"
-        - command:
             - /opt/aqfer/log-wrap
             - --name
             - {{.JobName}}
