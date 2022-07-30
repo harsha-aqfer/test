@@ -11,7 +11,9 @@ spec:
         - command:
             - sh
             - -c
-            - echo "Hello World!"
+            - |
+              echo "Hello World!"
+        - command:
             - /opt/aqfer/log-wrap
             - --name
             - {{.JobName}}
