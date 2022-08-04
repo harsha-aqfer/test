@@ -14,8 +14,6 @@ spec:
             - {{.JobName}}
             - --cid
             - {{.Cid}}
-#             - --run-id
-#             - {{.RunId}}
             - --execution-id
             - {{.ExecutionId}}
             - --config
