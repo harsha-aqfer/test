@@ -14,10 +14,10 @@ spec:
             - {{.JobName}}
             - --cid
             - {{.Cid}}
-            - --run-id
-            - {{.RunId}}
+#             - --run-id
+#             - {{.RunId}}
             - --execution-id
-            - "123"
+            - {{.ExecutionId}}
             - --config
             - s3://com.aqfer.dev.packages/adl/{{.Cid}}/{{.JobName}}/bundle.yaml
             - --dest
