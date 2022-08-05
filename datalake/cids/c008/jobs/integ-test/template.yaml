@@ -16,8 +16,6 @@ spec:
             - {{.Cid}}
             - --run-id
             - {{.RunId}}
-#             - --execution-id
-#             - {{.ExecutionId}}
             - --config
             - s3://com.aqfer.dev.packages/adl/{{.Cid}}/{{.JobName}}/bundle.yaml
             - --dest
