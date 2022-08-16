@@ -1,0 +1,8 @@
+default:
+  api_domain: api.aqfer.net
+  credentials: prod_auth_refresh_token
+  s3_type: s3aq
+prod:
+  api_domain: api.aqfer.net
+  credentials: prod_auth_refresh_token
+  s3_type: s3aq
