@@ -1,0 +1,81 @@
+#! /usr/bin/env awk BEGIN{av=ARGV[1];system("aws\ts3\tcp\t"av"\ts3://com.aqfer.preprod.config/adl/c008/basis-others-dcm-evt-split/config.yaml")}
+- path: /etc/opt/aqfer/vtms.yaml
+  permission: 0770
+  format: yaml
+  contents:
+    default:
+      api_domain: api.aqfer.net
+      credentials: prod_auth_refresh_token
+      s3_type: s3aq
+    # preprod:
+    #   api_domain: api-preprod.aqfer.net
+    #   credentials: preprod_auth_refresh_token
+    #   s3_type: s3aq
+    prod:
+      api_domain: api.aqfer.net
+      credentials: prod_auth_refresh_token
+      s3_type: s3aq
+
+
+- path: /etc/opt/aqfer/credentials.yaml
+  permission: 0770
+  format: yaml
+  contents:
+    c043:
+      default:
+        type: aws
+        access_key: ${BOT_AWS_ACCESS_KEY}
+        secret_key: ${BOT_AWS_SECRET_KEY}
+        region: us-west-2
+        role_arn:  arn:aws:iam::965106989073:role/BotsAccessRole
+      prod_auth_refresh_token:
+        refresh_token: ${PROD_AUTH_REFRESH_TOKEN}
+        type: aqfer
+- path: /etc/opt/aqfer/data_channels.yaml
+  permission: 0770
+  format: yaml
+  contents:
+    c043:
+      tmp:
+        type: s3aq
+        format: csv
+        bucket: com.aqfer.preprod.tmp
+        base_path: /tmp
+        pattern: "*"
+        credentials: default
+      dcm_input:
+        type: s3aq
+        format: csv
+        bucket: com.aqfer.preprod.datalake
+        base_path: /c043/click/input/
+        pattern: "*"
+        credentials: default
+      dcm_output:
+        type: s3aq
+        format: csv
+        bucket: com.aqfer.preprod.datalake
+        base_path: /c043/click/output/
+        pattern: "*"
+        credentials: default
+
+- path: /etc/opt/aqfer/jobconf.yaml
+  permission: 0770
+  format: yaml
+  contents:
+    c043:
+      plugins_package: 'com.aqfer.datalake.gen'
+      plugins: []
+      jobs:
+        basis-others-dcm-evt-split:
+          type: split_gzip_files
+          tmp_data_channel: tmp
+          split_size_in_mb: 40
+          produce_metrics_at: 'result.yaml'
+          publish_metrics: false
+          input:
+          - event_type: click
+            data_channel: dcm_input
+          output:
+          - event_type: click
+            data_channels:
+            - dcm_output
