@@ -30,7 +30,10 @@ spec:
             - |
               cp /etc/opt/aqfer/result.yaml .
               echo "Hello World!"
-              sleep "60"
+              while true
+              do
+               echo "hkjhklhkljfljwlgfjlkjglkwjlkwlkgwkghtkwehtklwehtklwhtlkjwklhjthweklthwklhtlkwhtkjhwektjhwkjthqwejkthwjkehtjkqwhtkljwehklthqwehtkjqwegtkjwegtkwqetjkqwhetjkhwekjthwqjkhtkljwhtkqhtwljhtjlhtkjqhwetkjwhtjkhwjkthjkqwehtjkwehtjkwethwekjhtjklwehtkwlejhtkhjhklhjkhfkjshfjkshdfjksdhfkhasdkghksadhgkjsdhgkjashgjksdhgjhasdjkghkasdjhgkjhajkdhfjksdhfjksdhfkjadshgkjadshgvjksadgkjsadhgkjasdghkjasdgfhkjasdgdsgkjasdgkjdsjsaddfgjkgj"
+              done
           env:
             - name: AQFER_LAKEVIEW_HOST
               value: https://lakeview.api-dev.aqfer.net
