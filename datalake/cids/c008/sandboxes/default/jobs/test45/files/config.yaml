@@ -1,1 +1,18 @@
-- path: /etc/opt/aqfer/result.yaml\n  permission: 0770\n  format: yaml\n  contents:\n    lakeview_metrics:\n      - data_channel: integ_test_input\n        type: input\n        record_schema: test\n        file_count: 1\n        error_file_count: 0\n        record_count: 99999999\n        quarantine_record_count: 0\n        byte_count: 5384214\n      - data_channel: integ_test_output\n        type: output\n        file_count: 1\n        record_count: 7664\n        byte_count: 1602994
+- path: /etc/opt/aqfer/result.yaml
+  permission: 0770
+  format: yaml
+  contents:
+    lakeview_metrics:
+      - data_channel: "integ_test_input"
+        type: "input"
+        record_schema: "test"
+        file_count: 1
+        error_file_count: 0
+        record_count: 99999999
+        quarantine_record_count: 0
+        byte_count: 5384214
+      - data_channel: "integ_test_output"
+        type: "output"
+        file_count: 1
+        record_count: 7664
+        byte_count: 1602994
