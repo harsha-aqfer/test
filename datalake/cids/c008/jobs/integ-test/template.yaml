@@ -30,9 +30,8 @@ spec:
             - |
               cp /etc/opt/aqfer/result.yaml .
               echo "Hello World!"
-              while true
-              do
-               echo "hkjhklhkljfljwlgfjlkjglkwjlkwlkgwkghtkwehtklwehtklwhtlkjwklhjthweklthwklhtlkwhtkjhwektjhwkjthqwejkthwjkehtjkqwhtkljwehklthqwehtkjqwegtkjwegtkwqetjkqwhetjkhwekjthwqjkhtkljwhtkqhtwljhtjlhtkjqhwetkjwhtjkhwjkthjkqwehtjkwehtjkwethwekjhtjklwehtkwlejhtkhjhklhjkhfkjshfjkshdfjksdhfkhasdkghksadhgkjsdhgkjashgjksdhgjhasdjkghkasdjhgkjhajkdhfjksdhfjksdhfkjadshgkjadshgvjksadgkjsadhgkjasdghkjasdgfhkjasdgdsgkjasdgkjdsjsaddfgjkgj"
+              for ((i=0; i < 1500; i++));do
+                      echo $i
               done
           env:
             - name: AQFER_LAKEVIEW_HOST
