@@ -70,9 +70,20 @@ job_kinds:
             - file:///etc/opt/aqfer/jobconf.yaml
             - '{{.Cid}}'
             - sandbox-mapper
-    config_files:
-      - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/jobconf.yaml
-      - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/data_channels.yaml
-      - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/mappings.yaml
-      - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/credentials.yaml
-override_k8s_job_template: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/template.yaml
+    system_files:
+      - jobconf.yaml
+      - data_channels.yaml
+      - mappings.yaml
+    bundle_files:
+      - path: /etc/opt/aqfer/
+        files: 
+          - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/system_files/
+          - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/credentials.yaml
+      - path: /opt/aqfer/user/
+        files:
+          - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/user_files/         
+file_paths:
+  override_k8s_job_template: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/template.yaml
+  system_files_base_path: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/system_files/
+  user_files_base_path: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/user_files/
+
