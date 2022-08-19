@@ -80,7 +80,8 @@ bundle_file:
       - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/system_files/
       - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/credentials.yaml
   - pod_dest_folder: /opt/aqfer/user/
-    github_src_paths: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/user_files/
+    github_src_paths: 
+      - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/user_files/
 
 file_paths:
   system_files_base_path: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/system_files/
