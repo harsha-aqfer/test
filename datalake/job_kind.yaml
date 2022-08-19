@@ -29,9 +29,8 @@ job_kinds:
             - merge-do
             - --stage
             - transform
-    config_files:
-      - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/config.yaml
-      - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/credentials.yaml
+    system_files:
+      - config.yaml
   mapper:
     parameters:
       fixed:
@@ -70,9 +69,20 @@ job_kinds:
             - file:///etc/opt/aqfer/jobconf.yaml
             - '{{.Cid}}'
             - sandbox-mapper
-    config_files:
-      - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/jobconf.yaml
-      - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/data_channels.yaml
-      - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/files/mappings.yaml
+    system_files:
+      - jobconf.yaml
+      - data_channels.yaml
+      - mappings.yaml
+
+bundle_file:
+  - pod_dest_folder: /etc/opt/aqfer/
+    github_src_paths:
+      - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/system_files/
       - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/credentials.yaml
-override_k8s_job_template: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/template.yaml
+  - pod_dest_folder: /opt/aqfer/user/
+    github_src_paths: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/user_files/
+
+file_paths:
+  system_files_base_path: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/system_files/
+  user_files_base_path: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/user_files/
+  override_k8s_job_template: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/template.yaml
