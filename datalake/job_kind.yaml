@@ -29,7 +29,7 @@ job_kinds:
             - merge-do
             - --stage
             - transform
-    system_files:
+    required_system_files:
       - config.yaml
   mapper:
     parameters:
@@ -69,7 +69,7 @@ job_kinds:
             - file:///etc/opt/aqfer/jobconf.yaml
             - '{{.Cid}}'
             - sandbox-mapper
-    system_files:
+    required_system_files:
       - jobconf.yaml
       - data_channels.yaml
       - mappings.yaml
