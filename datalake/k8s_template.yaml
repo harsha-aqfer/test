@@ -37,12 +37,12 @@ spec:
             - name: BOT_AWS_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  key: BOT_AWS_ACCESS_KEY
+                  key: DEFAULT_AWS_ACCESS_KEY
                   name: {{.Namespace}}
             - name: BOT_AWS_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  key: BOT_AWS_SECRET_KEY
+                  key: DEFAULT_AWS_SECRET_KEY
                   name: {{.Namespace}}
             - name: PEPPER
               value: aqfer
