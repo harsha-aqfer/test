@@ -25,7 +25,7 @@ spec:
             - --credential-file
             - /etc/opt/aqfer/credentials.yaml
             - --
-{{trimSuffix "\n" .UserParams.Executable | indent 12 }}
+{{trimSuffix "\n" .SystemParams.Executable | indent 12 }}
           env:
             - name: AQFER_LAKEVIEW_HOST
               value: lakeview.api-dev.aqfer.net
@@ -44,8 +44,8 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
-          image: {{.UserParams.Image}}
+          image: {{.SystemParams.Image}}
           name: {{.JobName}}
-          resources: {{trimSuffix "\n" .UserParams.Resources | nindent 12}}
+          resources: {{trimSuffix "\n" .SystemParams.Resources | nindent 12}}
       restartPolicy: Never
       serviceAccountName: spark
