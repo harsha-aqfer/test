@@ -3,7 +3,7 @@ job_kinds:
     parameters:
       fixed:
         - name: Image
-          value: "965106989073.dkr.ecr.us-west-2.amazonaws.com/adl-uncertified:1.1800.0"
+          value: "965106989073.dkr.ecr.us-west-2.amazonaws.com/adl-uncertified:1.2025.0"
         - name: Resources
           value: |
             requests:
@@ -35,7 +35,7 @@ job_kinds:
     parameters:
       fixed:
         - name: Image
-          value: "965106989073.dkr.ecr.us-west-2.amazonaws.com/adl-uncertified:1.1800.0"
+          value: "965106989073.dkr.ecr.us-west-2.amazonaws.com/adl-uncertified:1.2025.0"
         - name: Resources
           value: |
             requests:
