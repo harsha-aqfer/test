@@ -10,23 +10,23 @@ spec:
       containers:
         - command:
             - /opt/aqfer/log-wrap
-            - --name
-            - {{.JobName}}
             - --cid
             - {{.Cid}}
+            - --sandbox
+            - {{.SandboxName}}
+            - --name
+            - {{.JobName}}
             - --run-id
             - {{.RunId}}
             - --config
             - {{.ConfigBundleS3Path}}
             - --dest
-            - s3://{{.LogBucket}}/{{.Cid}}/{{.Namespace}}/$(POD_NAME)
+            - s3://{{.LogBucket}}/{{.Cid}}/{{.SandboxName}}/$(POD_NAME)
             - --credential-file
             - /etc/opt/aqfer/credentials.yaml
             - --
 {{trimSuffix "\n" .UserParams.Executable | indent 12 }}
           env:
-            - name: AWS_REGION
-              value: us-west-2
             - name: AQFER_LAKEVIEW_HOST
               value: lakeview.api-dev.aqfer.net
             - name: AQFER_REFRESH_TOKEN
