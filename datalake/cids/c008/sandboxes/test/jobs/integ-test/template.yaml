@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{.JobName}}-abc
+  name: "{{.JobName}}-abc"
 spec:
   backoffLimit: 0
   template:
