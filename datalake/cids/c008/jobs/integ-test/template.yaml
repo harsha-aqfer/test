@@ -29,8 +29,12 @@ spec:
             - -c
             - |
               cp /etc/opt/aqfer/result.yaml .
-              echo "Hello World!"
-              sleep 60
+              for ((i=0; i < 301; i++));do
+                  echo $i
+                  if [ $i == 150 ] || [ $i == 250 ] || [ $i == 300 ]
+                     sleep 30
+                  fi
+              done
           env:
             - name: AQFER_LAKEVIEW_HOST
               value: https://lakeview.api-dev.aqfer.net
