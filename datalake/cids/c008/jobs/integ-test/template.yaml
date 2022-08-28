@@ -31,7 +31,7 @@ spec:
               cp /etc/opt/aqfer/result.yaml .
               for ((i=0; i < 301; i++));do
                   echo $i
-                  if [ $i == 150 ] || [ $i == 250 ] || [ $i == 300 ]
+                  if [ $i == 150 ] || [ $i == 250 ] || [ $i == 300 ]; then
                      sleep 30
                   fi
               done
