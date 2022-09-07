@@ -19,7 +19,7 @@ spec:
             - --config
             - {{.ConfigBundleS3Path}}
             - --dest
-            - s3://{{.LogBucket}}/{{.Cid}}/{{.Namespace}}/$(POD_NAME)
+            - s3://{{.LogBucket}}/{{.Cid}}/{{.SandboxName}}/$(POD_NAME)
             - --credential-file
             - /etc/opt/aqfer/credentials.yaml
             - --
