@@ -1,11 +1,11 @@
-work_area: s3://c008.default@com.aqfer.preprod.tmp/amdp-services/collator/examples/example-2/work_area/{{env "POD_NAME"}}
+work_area: s3://c008.default@com.aqfer-dev.tmp/amdp-services/collator/examples/example-2/work_area/{{env "POD_NAME"}}
 separate_transform_stage: true
 inputs:
   - name: events
     key:
       - user_id
     locations:
-      - folder: s3://c008.default@com.aqfer.preprod.tmp/amdp-services/collator/examples/example-2/input/
+      - folder: s3://c008.default@com.aqfer-dev.tmp/amdp-services/collator/examples/example-2/input/
     format: csv
     csv:
       has_header: true
@@ -39,7 +39,7 @@ transform:
         use:
           - user_id
 outputs:
-  - destination: s3://c008.default@com.aqfer.preprod.tmp/amdp-services/collator/examples/example-2/output
+  - destination: s3://c008.default@com.aqfer-dev.tmp/amdp-services/collator/examples/example-2/output
     project:
       '.':
         field_names: [ 'hashed_user_id', 'events' ]
