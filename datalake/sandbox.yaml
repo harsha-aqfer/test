@@ -1,0 +1,94 @@
+job_kinds:
+  collator:
+    parameters:
+      fixed:
+        - name: Image
+          value: "965106989073.dkr.ecr.us-west-2.amazonaws.com/adl-uncertified:1.2025.0"
+        - name: Resources
+          value: |
+            requests:
+              cpu: 500m
+              memory: 400Mi
+        - name: Executable
+          value: |
+            - /opt/aqfer/hetero-collate
+            - driver
+            - --config-file
+            - /etc/opt/aqfer/config.yaml
+            - --credentials-file
+            - /etc/opt/aqfer/credentials.yaml
+            - --stage
+            - split
+            - --stage
+            - collate
+            - --stage
+            - sort
+            - --stage
+            - merge-plan
+            - --stage
+            - merge-do
+            - --stage
+            - transform
+    required_system_files:
+      - config.yaml
+  mapper:
+    parameters:
+      fixed:
+        - name: Image
+          value: "965106989073.dkr.ecr.us-west-2.amazonaws.com/adl-uncertified:1.2025.0"
+        - name: Resources
+          value: |
+            requests:
+              cpu: 1
+              memory: 4Gi
+        - name: Executable
+          value: |
+            - /opt/aqfer/k8s-spark
+            - run
+            - --stats-folder
+            - log-wrap
+            - --jars-folder
+            - /opt/aqfer
+            - -v
+            - --
+            - --driver-memory
+            - 1500M
+            - --executor-memory
+            - 2500M
+            - --name
+            - '{{.Cid}}-sandbox-mapper'
+            - --class
+            - com.aqfer.datalake.Main
+            - --conf
+            - spark.executor.instances=3
+            - --conf
+            - spark.yarn.executor.memoryOverhead=1024
+            - --conf
+            - spark.executorEnv.CONFIG_BUNDLE=s3://com.aqfer.preprod.config/adl/{{.Cid}}/{{.SandboxName}}/credentials.yaml
+            - /opt/aqfer/datalakeetl_2.11.jar
+            - file:///etc/opt/aqfer/jobconf.yaml
+            - '{{.Cid}}'
+            - sandbox-mapper
+    required_system_files:
+      - jobconf.yaml
+      - data_channels.yaml
+      - mappings.yaml
+
+bundle_file:
+  - pod_dest_folder: /etc/opt/aqfer/
+    github_src_paths:
+      - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/system_files/
+      - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/credentials.yaml
+  - pod_dest_folder: /opt/aqfer/user/
+    github_src_paths: 
+      - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/user_files/
+
+github_file_paths:
+  sandbox_base_path: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/
+  job_base_path: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/
+  system_files_base_path: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/system_files/
+  user_files_base_path: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/user_files/
+  override_k8s_job_template: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/template.yaml
+
+s3_paths:
+  bundle_file_path: s3://{{.Bucket}}/amdp/{{.Cid}}/{{.SandboxName}}/{{.JobName}}/{{.RunId}}/bundle.yaml
