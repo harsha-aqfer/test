@@ -53,16 +53,6 @@ spec:
                 secretKeyRef:
                   key: DEV_AUTH_REFRESH_TOKEN
                   name: {{.Namespace}}
-            - name: BOT_AWS_ACCESS_KEY
-              valueFrom:
-                secretKeyRef:
-                  key: DEFAULT_AWS_ACCESS_KEY
-                  name: "c008"
-            - name: BOT_AWS_SECRET_KEY
-              valueFrom:
-                secretKeyRef:
-                  key: DEFAULT_AWS_SECRET_KEY
-                  name: "c008"
             - name: PEPPER
               value: aqfer
             - name: POD_NAME
