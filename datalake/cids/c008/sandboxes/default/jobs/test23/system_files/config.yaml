@@ -38,8 +38,6 @@ transform:
           template: 'XI{{print .user_id}}'
         use:
           - user_id
-  - omit:
-      - user_id
 outputs:
   - destination: s3://c008.default@com.aqfer-dev.tmp/amdp-services/collator/examples/example-2/output
 capacity:
