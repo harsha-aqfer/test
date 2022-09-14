@@ -1,4 +1,4 @@
-work_area: s3://c008.default@com.aqfer-dev.tmp/amdp-services/collator/examples/example-2/work_area/test
+work_area: s3://c008.default@com.aqfer-dev.tmp/amdp-services/collator/examples/example-2/work_area/{{env "POD_NAME"}}
 separate_transform_stage: true
 inputs:
   - name: events
@@ -38,6 +38,8 @@ transform:
           template: 'XI{{print .user_id}}'
         use:
           - user_id
+  - omit:
+      - quintile
 outputs:
   - destination: s3://c008.default@com.aqfer-dev.tmp/amdp-services/collator/examples/example-2/output
     project:
