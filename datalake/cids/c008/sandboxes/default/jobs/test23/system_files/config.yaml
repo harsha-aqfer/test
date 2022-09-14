@@ -39,12 +39,9 @@ transform:
         use:
           - user_id
   - omit:
-      - quintile
+      - user_id
 outputs:
   - destination: s3://c008.default@com.aqfer-dev.tmp/amdp-services/collator/examples/example-2/output
-    project:
-      '.':
-        field_names: [ 'hashed_user_id', 'events' ]
 capacity:
   split_stage:
     in_proc_executor:
