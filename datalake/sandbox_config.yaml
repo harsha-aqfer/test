@@ -31,6 +31,28 @@ job_kinds:
             - transform
     required_system_files:
       - config.yaml
+  transform:
+    parameters:
+      fixed:
+        - name: Image
+          value: "965106989073.dkr.ecr.us-west-2.amazonaws.com/adl-uncertified:1.2025.0"
+        - name: Resources
+          value: |
+            requests:
+              cpu: 500m
+              memory: 400Mi
+        - name: Executable
+          value: |
+            - /opt/aqfer/transform
+            - driver
+            - --config-file
+            - /etc/opt/aqfer/config.yaml
+            - --credentials-file
+            - /etc/opt/aqfer/credentials.yaml
+            - --stage
+            - transform
+    required_system_files:
+      - config.yaml
   mapper:
     parameters:
       fixed:
