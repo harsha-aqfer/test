@@ -30,6 +30,9 @@ sort:
     '.':
       field_names: [ 'user_id' ]
 transform:
+  transform:
+      - python:
+          file: /opt/aqfer/user/transform.py
   - insert_columns:
       - name: hashed_user_id
         before: user_id
