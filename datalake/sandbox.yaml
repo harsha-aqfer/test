@@ -1,4 +1,24 @@
 job_kinds:
+  split-gz:
+    parameters:
+      fixed:
+        - name: Image
+          value: "965106989073.dkr.ecr.us-west-2.amazonaws.com/adl-uncertified:1.2065.0"
+        - name: Resources
+          value: |
+            requests:
+              cpu: 1
+              memory: 4Gi
+        - name: Executable
+          value: |
+            - /opt/aqfer/split-files
+            - split
+            - --config-file
+            - /etc/opt/aqfer/config.yaml
+            - --credentials-file
+            - /etc/opt/aqfer/credentials.yaml
+    required_system_files:
+      - config.yaml
   collator:
     parameters:
       fixed:
