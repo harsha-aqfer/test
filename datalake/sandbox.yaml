@@ -1,5 +1,5 @@
 images:
-  - &adl-job-aws-us-west-2 "965106989073.dkr.ecr.us-west-2.amazonaws.com/adl-uncertified:1.2027.0"
+  - &adl-job-aws-us-west-2 "965106989073.dkr.ecr.us-west-2.amazonaws.com/adl-uncertified:1.2028.0"
 
 job_kinds:
   collator:
