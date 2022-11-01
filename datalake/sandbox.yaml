@@ -6,6 +6,7 @@ job_kinds:
     parameters:
       images: &Images
         aws:
+          us-west-2: *adl-job-aws-us-west-2
           default: *adl-job-aws-us-west-2
       fixed:
         - name: Resources
