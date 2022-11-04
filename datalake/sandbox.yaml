@@ -8,7 +8,7 @@ job_kinds:
         aws:
           default: *adl-job-aws-us-west-2
         gcp:
-          us-central1: "" 
+          us-east4: "" 
       fixed:
         - name: Resources
           value: |
