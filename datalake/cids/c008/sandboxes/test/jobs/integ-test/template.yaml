@@ -10,14 +10,16 @@ spec:
       containers:
         - command:
             - /opt/aqfer/log-wrap
-            - --name
-            - {{.JobName}}
             - --cid
             - {{.Cid}}
+            - --sandbox
+            - {{.SandboxName}}
+            - --name
+            - {{.JobName}}
             - --config
             - s3://com.aqfer.dev.packages/adl/{{.Cid}}/{{.JobName}}/bundle.yaml
-            - --execution-id
-            - {{.ExecutionId}}
+            - --run-id
+            - {{.RunId}}
             - --dest
             - s3://{{.LogBucket}}/{{.Cid}}/{{.JobName}}/$(POD_NAME)
             - --lakeview-domain
