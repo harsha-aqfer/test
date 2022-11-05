@@ -27,6 +27,8 @@ spec:
             - --
 {{trimSuffix "\n" .SystemParams.Executable | indent 12 }}
           env:
+            - name: a
+              value: {{.UserParams.a}}
             - name: AQFER_LAKEVIEW_HOST
               value: lakeview.api-dev.aqfer.net
             - name: AWS_REGION
