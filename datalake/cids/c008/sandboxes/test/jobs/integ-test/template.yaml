@@ -46,7 +46,7 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
-          image: 965106989073.dkr.ecr.us-west-2.amazonaws.com/adl-uncertified:dev_v1.2204.0-build.dd08608-1667668197
+          image: 965106989073.dkr.ecr.us-west-2.amazonaws.com/adl-uncertified:dev_v1.2204.0-build.de1d3be-1667669800
           name: {{.JobName}}
           resources:
             requests:
