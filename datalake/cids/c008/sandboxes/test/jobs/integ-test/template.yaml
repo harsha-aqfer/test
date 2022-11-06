@@ -17,7 +17,7 @@ spec:
             - --name
             - {{.JobName}}
             - --config
-            - s3://com.aqfer.dev.packages/adl/{{.Cid}}/{{.JobName}}/bundle.yaml
+            - {{.ConfigBundleS3Path}}
             - --run-id
             - {{.RunId}}
             - --dest
