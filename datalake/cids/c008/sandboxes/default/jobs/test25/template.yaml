@@ -32,12 +32,6 @@ spec:
             - |
                /opt/aqfer/hetero-collate driver --config-file /etc/opt/aqfer/config.yaml --credentials-file /etc/opt/aqfer/credentials.yaml --stage split --stage collate --stage sort --stage merge-plan --stage merge-do --stage transform \
                echo "Hello World!"
-               for ((i=0; i < 301; i++));do
-                   echo $i
-                   if [ $i == 150 ] || [ $i == 250 ] || [ $i == 300 ]; then
-                      sleep 30
-                   fi
-               done
           env:
             - name: AQFER_LAKEVIEW_HOST
               value: https://lakeview.api-dev.aqfer.net
