@@ -8,7 +8,7 @@ job_kinds:
         aws:
           default: *adl-job-aws-us-west-2
         gcp:
-          us-east4: "" 
+          us-east4: "us-east4-docker.pkg.dev/aqfer-preproduction/aqfer-container-images/amdp-uncertified:dev_v1.2207.0-build.7ffbf99-1667802156" 
       fixed:
         - name: Resources
           value: |
