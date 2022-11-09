@@ -5,7 +5,7 @@ inputs:
     key:
       - user_id
     locations:
-      - folder: gs://preprod_gcs@tmp.amdp.preprod.aqfer.com/amdp-services/collator/examples/example-2/input/
+      - folder: gs://preprod_gcs@tmp.amdp.preprod.aqfer.com/gcp-lakeview-integ-test/collator/examples/example-2/input/
     format: csv
     csv:
       has_header: true
