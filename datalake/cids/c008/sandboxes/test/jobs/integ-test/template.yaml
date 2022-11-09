@@ -30,7 +30,6 @@ spec:
             - sh
             - -c
             - |
-              cp /etc/opt/aqfer/result.yaml .
               echo "Hello World!"
               sleep 60
           env:
