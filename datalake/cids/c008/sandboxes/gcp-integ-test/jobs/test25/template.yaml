@@ -62,6 +62,11 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
+            - name: GKE_AQFER_PREPROD_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: GKE_AQFER_PREPROD_PRIVATE_KEY
+                  name: {{.Cid}}
             - name: USER_DIR
               value: '/opt/aqfer/user'
             - name: SCHEMA_DIR
