@@ -1,0 +1,76 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{.JobName}}
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      activeDeadlineSeconds: 3600
+      containers:
+        - command:
+            - /opt/aqfer/log-wrap
+            - --cid
+            - {{.Cid}}
+            - --sandbox
+            - {{.SandboxName}}
+            - --name
+            - {{.JobName}}
+            - --run-id
+            - {{.RunId}}
+            - --config
+            - {{.ConfigBundleS3Path}}
+            - --dest
+            - {{.LogPath}}
+            - --lakeview-domain
+            - lakeview.api-dev.aqfer.net
+            - --auth-domain
+            - auth.api-dev.aqfer.net
+            - --
+            - /opt/aqfer/hetero-collate
+            - driver
+            - --config-file
+            - /etc/opt/aqfer/config.yaml
+            - --credentials-file
+            - /etc/opt/aqfer/credentials.yaml
+            - --stage
+            - split
+            - --stage
+            - collate
+            - --stage
+            - sort
+            - --stage
+            - merge-plan
+            - --stage
+            - merge-do
+            - --stage
+            - transform
+          env:
+            - name: CID
+              value: {{.Cid}}
+            - name: a
+              value: {{.UserParams.a}}
+            - name: AQFER_LAKEVIEW_HOST
+              value: {{.UserParams.host}}
+            - name: AQFER_REFRESH_TOKEN
+              value: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODM1MjM2NjYsImp0aSI6Ijc0ZGJlYzI5LWI2MzMtMTFlYy05Nzk5LTAyYmI2Y2Y2NDFjMiIsImlhdCI6MTY0OTMwOTI2NiwidXNlciI6IkhhcnNoYSIsImVtYWlsIjoiaGFyc2hhQHN0YXJ0c21hcnRsYWJzLmNvbSIsInNjb3BlIjp7ImNpZHMiOlsiYzAwOCJdfSwidHlwZSI6InJlZnJlc2hfdG9rZW4iLCJyb2xlcyI6WyJhcWZlcl9hZG1pbiJdLCJwdXJwb3NlIjoiY2xpZW50IG1nbXQgaW50ZWcgdGVzdCJ9.zqjSXzFo-22dXA8Yy0TQbAHpfyS5sKAggsNluRCIsX0"
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: USER_DIR
+              value: '/opt/aqfer/user'
+            - name: SCHEMA_DIR
+              value: '/etc/opt/aqfer/amdp_schemas'
+          image: us-east4-docker.pkg.dev/aqfer-preproduction/aqfer-container-images/amdp-uncertified:dev_v1.2207.0-build.7ffbf99-1667802156
+          name: {{.JobName}}
+          resources:
+            requests:
+              memory: 400Mi
+              cpu: 500m
+      restartPolicy: Never
+      serviceAccountName: spark
