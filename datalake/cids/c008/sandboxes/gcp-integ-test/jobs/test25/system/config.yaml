@@ -1,1 +1,64 @@
-abc
+work_area: gs://c008.preprod_gcs@tmp.amdp.preprod.aqfer.com/amdp-services/collator/examples/example-2/work_area/{{env "POD_NAME"}}
+separate_transform_stage: true
+inputs:
+  - name: events
+    key:
+      - user_id
+    locations:
+      - folder: s3://c008.preprod_gcs@tmp.amdp.preprod.aqfer.com/amdp-services/collator/examples/example-2/input/
+    format: csv
+    csv:
+      has_header: true
+      schema:
+        type: record
+        name: event
+        fields:
+          - name: user_id
+            type: string
+          - name: category
+            type: string
+          - name: subcategory
+            type: string
+          - name: product_name
+            type: string
+          - name: quintile
+            type: int
+sort:
+  key_names:
+    - user_id
+  project:
+    '.':
+      field_names: [ 'user_id' ]
+transform:
+  - insert_columns:
+      - name: hashed_user_id
+        before: user_id
+        type: string
+        expr:
+          template: 'XI{{print .user_id}}'
+        use:
+          - user_id
+outputs:
+  - destination: s3://c008.preprod_gcs@tmp.amdp.preprod.aqfer.com/amdp-services/collator/examples/example-2/output
+    project:
+      '.':
+        field_names: [ 'hashed_user_id', 'events' ]
+capacity:
+  split_stage:
+    in_proc_executor:
+      num_workers: 12
+  collate_stage:
+    in_proc_executor:
+      num_workers: 32
+  sort_stage:
+    in_proc_executor:
+      num_workers: 3
+  merge_plan_stage:
+    in_proc_executor:
+      num_workers: 20
+  merge_do_stage:
+    in_proc_executor:
+      num_workers: 20
+  transform_stage:
+    in_proc_executor:
+      num_workers: 20
