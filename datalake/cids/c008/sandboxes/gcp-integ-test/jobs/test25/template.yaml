@@ -19,7 +19,7 @@ spec:
             - --run-id
             - {{.RunId}}
             - --config
-            - {{.ConfigBundleS3Path}}
+            - {{.ConfigPath}}
             - --dest
             - {{.LogPath}}
             - --lakeview-domain
