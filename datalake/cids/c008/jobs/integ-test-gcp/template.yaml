@@ -17,7 +17,7 @@ spec:
             - --run-id
             - {{.RunId}}
             - --dest
-            - s3://{{.LogBucket}}/{{.Cid}}/$(POD_NAME)
+            - gs://{{.LogBucket}}/{{.Cid}}/$(POD_NAME)
             - --lakeview-domain
             - lakeview.api-dev.aqfer.net
             - --auth-domain
