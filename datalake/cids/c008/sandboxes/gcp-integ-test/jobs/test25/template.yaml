@@ -26,29 +26,25 @@ spec:
             - lakeview.api-dev.aqfer.net
             - --auth-domain
             - auth.api-dev.aqfer.net
-            - --
-            - sh
-            - -c
-            - |
-              sleep 6000000  
-#             - /opt/aqfer/hetero-collate
-#             - driver
-#             - --config-file
-#             - /etc/opt/aqfer/config.yaml
-#             - --credentials-file
-#             - /etc/opt/aqfer/credentials.yaml
-#             - --stage
-#             - split
-#             - --stage
-#             - collate
-#             - --stage
-#             - sort
-#             - --stage
-#             - merge-plan
-#             - --stage
-#             - merge-do
-#             - --stage
-#             - transform
+            - -- 
+            - /opt/aqfer/hetero-collate
+            - driver
+            - --config-file
+            - /etc/opt/aqfer/config.yaml
+            - --credentials-file
+            - /etc/opt/aqfer/credentials.yaml
+            - --stage
+            - split
+            - --stage
+            - collate
+            - --stage
+            - sort
+            - --stage
+            - merge-plan
+            - --stage
+            - merge-do
+            - --stage
+            - transform
           env:
             - name: CID
               value: {{.Cid}}
