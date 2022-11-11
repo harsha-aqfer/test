@@ -19,7 +19,7 @@ spec:
             - --run-id
             - {{.RunId}}
             - --config
-            - {{.ConfigBundleS3Path}}
+            - {{.ConfigPath}}
             - --dest
             - s3://{{.LogBucket}}/{{.Cid}}/{{.SandboxName}}$(POD_NAME)
             - --lakeview-domain
@@ -30,8 +30,8 @@ spec:
             - sh
             - -c
             - |
-               /opt/aqfer/hetero-collate driver --config-file /etc/opt/aqfer/config.yaml --credentials-file /etc/opt/aqfer/credentials.yaml --stage split --stage collate --stage sort --stage merge-plan --stage merge-do --stage transform
                echo "Hello World!"
+               sleep 60
           env:
             - name: AQFER_LAKEVIEW_HOST
               value: https://lakeview.api-dev.aqfer.net
