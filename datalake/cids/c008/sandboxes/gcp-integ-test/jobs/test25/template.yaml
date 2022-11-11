@@ -30,7 +30,8 @@ spec:
             - sh
             - -c
             - |
-              sleep 60000000
+              echo "Hello World!"
+              sleep 60
 #             - /opt/aqfer/hetero-collate
 #             - driver
 #             - --config-file
