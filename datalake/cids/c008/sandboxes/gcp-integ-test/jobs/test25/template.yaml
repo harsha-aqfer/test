@@ -30,7 +30,7 @@ spec:
             - sh
             - -c
             - |
-              echo "Hello World!" && cat result.yaml && sleep 60
+              echo "Hello World!" && cat res.yaml && sleep 60
 #             - /opt/aqfer/hetero-collate
 #             - driver
 #             - --config-file
