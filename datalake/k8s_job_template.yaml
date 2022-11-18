@@ -21,7 +21,7 @@ spec:
             - --config
             - {{.ConfigPath}}
             - --dest
-            - {{.LogPath}}
+            - {{.LogPath}}/$(POD_NAME)
             - --credential-file
             - /etc/opt/aqfer/credentials.yaml
             - --
