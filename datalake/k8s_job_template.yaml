@@ -34,10 +34,7 @@ spec:
             - name: AWS_REGION
               value: us-west-2  
             - name: AQFER_REFRESH_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  key: DEV_AUTH_REFRESH_TOKEN
-                  name: {{.Cid}}
+              value: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODM1MjM2NjYsImp0aSI6Ijc0ZGJlYzI5LWI2MzMtMTFlYy05Nzk5LTAyYmI2Y2Y2NDFjMiIsImlhdCI6MTY0OTMwOTI2NiwidXNlciI6IkhhcnNoYSIsImVtYWlsIjoiaGFyc2hhQHN0YXJ0c21hcnRsYWJzLmNvbSIsInNjb3BlIjp7ImNpZHMiOlsiYzAwOCJdfSwidHlwZSI6InJlZnJlc2hfdG9rZW4iLCJyb2xlcyI6WyJhcWZlcl9hZG1pbiJdLCJwdXJwb3NlIjoiY2xpZW50IG1nbXQgaW50ZWcgdGVzdCJ9.zqjSXzFo-22dXA8Yy0TQbAHpfyS5sKAggsNluRCIsX0"
             - name: PEPPER
               value: aqfer
             - name: POD_NAME
