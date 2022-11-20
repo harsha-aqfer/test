@@ -1,11 +1,11 @@
-work_area: s3://c008.default@com.aqfer-dev.tmp/amdp-services/collator/examples/example-2/work_area/"{{env "POD_NAME"}}"/l
+work_area: s3://c008.default@com.aqfer-dev.tmp/amdp-services/collator/examples/example-2/work_area/{{env "POD_NAME"}}
 separate_transform_stage: true
 inputs:
   - name: events
     key:
       - user_id
     locations:
-      - folder: s3://c008.default@com.aqfer-dev.tmp/com.aqfer-dev.tmp/amdp-services/collator/examples/example-2/input/
+      - folder: s3://c008.default@com.aqfer-dev.tmp/amdp-services/collator/examples/example-2/input/
     format: csv
     csv:
       has_header: true
