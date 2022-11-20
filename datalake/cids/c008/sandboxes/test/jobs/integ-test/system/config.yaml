@@ -35,7 +35,8 @@ transform:
         before: user_id
         type: string
         expr:
-          template: 'XI{{base64 (sha256 (print .user_id (env "PEPPER")))}}'
+          template: 'XI{{print .user_id}}'
+#           template: 'XI{{base64 (sha256 (print .user_id (env "PEPPER")))}}'
         use:
           - user_id
 outputs:
