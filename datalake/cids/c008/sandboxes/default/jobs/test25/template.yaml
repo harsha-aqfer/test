@@ -48,7 +48,7 @@ spec:
           name: {{.JobName}}
           resources:
             requests:
-              memory: 400Mi
+              memory: "1"
               cpu: 500m
       restartPolicy: Never
       serviceAccountName: spark
