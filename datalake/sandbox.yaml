@@ -213,8 +213,8 @@ github_file_paths:
   system_files_base_path: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/system/
   user_files_base_path: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/user/
   override_k8s_job_template: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/template.yaml
-  job_override_requirements_path: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/requirements.yaml
-  sandbox_override_requirements_path: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/requirements.yaml
+  job_override_requirements_path: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/override_requirements.yaml
+  sandbox_override_requirements_path: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/override_requirements.yaml
 
 s3_paths:
   bundle_file_path: "{{.Bucket}}/amdp/{{.Cid}}/{{.SandboxName}}/{{.JobName}}/{{.RunId}}/bundle.yaml"
