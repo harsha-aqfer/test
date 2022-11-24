@@ -1,0 +1,8 @@
+resources:
+  requests:
+    mapper:
+      cpu: 4
+      memory: 16Gi
+    transform:
+      cpu: 1
+      memory: 4Gi
