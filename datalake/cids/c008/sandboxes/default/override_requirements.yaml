@@ -3,9 +3,9 @@ resources:
     mapper:
       cpu: 4
       memory: 16Gi
-    collator:
-      cpu: 500m
-      memory: 600Mi
+#     collator:
+#       cpu: 500m
+#       memory: 600Mi
     transform:
       cpu: 1
       memory: 4Gi
