@@ -1,7 +1,7 @@
 work_area: s3://~~cid~~.default@com.aqfer.~~cid~~.sandbox/transform/examples/example-1/tmp/
 input:
   name: input_ttd_campaign_metadata
-  format: csv
+  format: cs
   csv:
     has_header: false
     schema:
