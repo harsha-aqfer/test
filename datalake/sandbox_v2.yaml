@@ -98,9 +98,9 @@ job_kinds:
             - -v
             - --
             - --driver-memory
-            - 500M
+            - 700M
             - --executor-memory
-            - 500M
+            - 700M
             - --name
             - '{{.JobName}}'
             - --class
