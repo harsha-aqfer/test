@@ -1,0 +1,52 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{.JobName}}
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      activeDeadlineSeconds: 3600
+      containers:
+        - command:
+            - /opt/aqfer/log-wrap
+            - --cid
+            - {{.Cid}}
+            - --sandbox
+            - {{.SandboxName}}
+            - --name
+            - {{.JobName}}
+            - --run-id
+            - {{.RunId}}
+            - --config
+            - {{.ConfigPath}}
+            - --dest
+            - {{.LogPath}}/$(POD_NAME)
+            - --credential-file
+            - /etc/opt/aqfer/credentials.yaml
+            - --
+{{trimSuffix "\n" .SystemParams.Executable | indent 12 }}
+          env:
+            - name: a
+              value: {{.UserParams.a}}
+            - name: AQFER_LAKEVIEW_HOST
+              value: lakeview.api-dev.aqfer.net
+            - name: AWS_REGION
+              value: us-west-2  
+            - name: AQFER_REFRESH_TOKEN
+              value: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODM1MjM2NjYsImp0aSI6Ijc0ZGJlYzI5LWI2MzMtMTFlYy05Nzk5LTAyYmI2Y2Y2NDFjMiIsImlhdCI6MTY0OTMwOTI2NiwidXNlciI6IkhhcnNoYSIsImVtYWlsIjoiaGFyc2hhQHN0YXJ0c21hcnRsYWJzLmNvbSIsInNjb3BlIjp7ImNpZHMiOlsiYzAwOCJdfSwidHlwZSI6InJlZnJlc2hfdG9rZW4iLCJyb2xlcyI6WyJhcWZlcl9hZG1pbiJdLCJwdXJwb3NlIjoiY2xpZW50IG1nbXQgaW50ZWcgdGVzdCJ9.zqjSXzFo-22dXA8Yy0TQbAHpfyS5sKAggsNluRCIsX0"
+            - name: PEPPER
+              value: aqfer
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          image: {{.Image}}
+          name: {{.JobName}}
+          resources: {{trimSuffix "\n" .SystemParams.Resources | nindent 12}}
+      restartPolicy: Never
+      serviceAccountName: spark
