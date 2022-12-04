@@ -106,7 +106,7 @@ job_kinds:
             - --class
             - com.aqfer.datalake.Main
             - --conf
-            - spark.executor.instances=3
+            - spark.executor.instances=1
             - --conf
             - spark.yarn.executor.memoryOverhead=512
             - --conf
