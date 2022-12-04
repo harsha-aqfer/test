@@ -1,18 +1,20 @@
 images:
-  - &adl-job-aws-us-west-2 "965106989073.dkr.ecr.us-west-2.amazonaws.com/adl-uncertified:1.2025.0"
+  - &adl-job-aws-us-west-2 "965106989073.dkr.ecr.us-west-2.amazonaws.com/adl-uncertified:1.2028.0"
 
 job_kinds:
   collator:
     parameters:
       images: &Images
         aws:
-          us-west-2: *adl-job-aws-us-west-2
+          default: *adl-job-aws-us-west-2
+        gcp:
+          us-east4: "us-east4-docker.pkg.dev/aqfer-preproduction/aqfer-container-images/amdp-uncertified:dev_v1.2207.0-build.7ffbf99-1667802156" 
       fixed:
         - name: Resources
           value: |
             requests:
-              cpu: 4
-              memory: 16Gi
+              cpu: 500m
+              memory: 400Mi
         - name: Executable
           value: |
             - /opt/aqfer/hetero-collate
@@ -42,8 +44,8 @@ job_kinds:
         - name: Resources
           value: |
             requests:
-              cpu: 1
-              memory: 4Gi
+              cpu: 500m
+              memory: 400Mi
         - name: Executable
           value: |
             - /opt/aqfer/transform
@@ -64,8 +66,8 @@ job_kinds:
         - name: Resources
           value: |
             requests:
-              cpu: 1
-              memory: 4Gi
+              cpu: 500m
+              memory: 400Mi
         - name: Executable
           value: |
             - /opt/aqfer/split-files
@@ -83,8 +85,8 @@ job_kinds:
         - name: Resources
           value: |
             requests:
-              cpu: 1
-              memory: 4Gi
+              cpu: 500m
+              memory: 400Mi
         - name: Executable
           value: |
             - /opt/aqfer/k8s-spark
@@ -233,4 +235,4 @@ github_file_paths:
   override_k8s_job_template: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/template.yaml
 
 s3_paths:
-  bundle_file_path: s3://{{.Bucket}}/amdp/{{.Cid}}/{{.SandboxName}}/{{.JobName}}/{{.RunId}}/bundle.yaml
+  bundle_file_path: "{{.Bucket}}/amdp/{{.Cid}}/{{.SandboxName}}/{{.JobName}}/{{.RunId}}/bundle.yaml"
