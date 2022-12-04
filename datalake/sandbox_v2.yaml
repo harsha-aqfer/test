@@ -98,9 +98,9 @@ job_kinds:
             - -v
             - --
             - --driver-memory
-            - 1500M
+            - 500M
             - --executor-memory
-            - 2500M
+            - 500M
             - --name
             - '{{.JobName}}'
             - --class
@@ -108,7 +108,7 @@ job_kinds:
             - --conf
             - spark.executor.instances=3
             - --conf
-            - spark.yarn.executor.memoryOverhead=1024
+            - spark.yarn.executor.memoryOverhead=512
             - --conf
             - spark.executorEnv.CONFIG_BUNDLE=s3://{{.Bucket}}/amdp/{{.Cid}}/{{.SandboxName}}/{{.JobName}}/{{.RunId}}/bundle.yaml
             - --conf
