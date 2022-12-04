@@ -2,13 +2,13 @@ c008:
   tmp:
     type: s3aq
     format: avro
-    bucket: com.aqfer.preprod.tmp
+    bucket: com.aqfer-dev.tmp
     base_path: /amdp-services/mapper/examples/example-1/work_area
     credentials: default
   input_ttd_campaign_metadata:
     type: s3aq
     format: csv
-    bucket: com.aqfer.preprod.tmp
+    bucket: com.aqfer-dev.tmp
     base_path: /amdp-services/mapper/examples/example-1/input
     pattern: "*.csv"
     credentials: default
@@ -18,6 +18,6 @@ c008:
   output_aqfer_metadata:
     type: s3aq
     format: avro
-    bucket: com.aqfer.preprod.tmp
+    bucket: com.aqfer-dev.tmp
     base_path: /amdp-services/mapper/examples/example-1/output
     credentials: default
