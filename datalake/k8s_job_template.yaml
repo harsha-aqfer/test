@@ -27,6 +27,8 @@ spec:
             - --
 {{trimSuffix "\n" .Executable | indent 12 }}
           env:
+            - name: CID
+              value: {{.Cid}}
             - name: a
               value: {{.UserParams.a}}
             - name: AQFER_LAKEVIEW_HOST
