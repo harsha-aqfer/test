@@ -110,7 +110,7 @@ job_kinds:
             - --conf
             - spark.yarn.executor.memoryOverhead=512
             - --conf
-            - spark.executorEnv.CONFIG_BUNDLE=s3://{{.Bucket}}/amdp/{{.Cid}}/{{.SandboxName}}/{{.JobName}}/{{.RunId}}/bundle.yaml
+            - spark.executorEnv.CONFIG_BUNDLE={{.BucketPrefixWithoutCredential}}/amdp/{{.Cid}}/{{.SandboxName}}/{{.JobName}}/{{.RunId}}/bundle.yaml
             - --conf
             - spark.executorEnv.POD_NAME=$(POD_NAME)
             - --conf
