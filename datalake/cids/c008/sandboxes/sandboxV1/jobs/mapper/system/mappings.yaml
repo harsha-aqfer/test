@@ -1,0 +1,84 @@
+schemas:
+  ttd_campaign:
+    columns:
+      - Campaign
+      - PrimaryGoal
+      - StartTimestamp
+      - EndTimestamp
+      - BaseBid
+      - MaxBid
+      - Budget
+      - ImpressionBudget
+  aqfer_metadata:
+    columns:
+      - id
+      - name
+      - name: canonical
+        data_type: boolean
+      - name: start_time
+        data_type: long
+      - name: end_time
+        data_type: long
+      - name: description
+        required: false
+      - name: parent_type
+        required: false
+      - name: parent_id
+        required: false
+      - name: trigger
+        required: false
+      - name: url
+        required: false
+      - name: url_ssl
+        required: false
+      - name: duration
+        data_type: long
+        required: false
+      - name: others
+        data_type: map
+    partitions:
+      - partner_name
+      - entity_type
+schema_mappings:
+  ttd_campaign_to_aqfer_metadata:
+    input_schema: ttd_campaign
+    output_schema: aqfer_metadata
+    if_missing: ''
+    column_mappings:
+      id: Campaign
+      name:
+        type: const
+        value: NA
+      canonical:
+        type: const
+        value: false
+      start_time:
+        type: expr
+        expr: "${StartTimestamp}"
+        transformations:
+          - type: type_conversion
+            output_data_type:
+              type: date_part
+              parse: "yyyy-MM-dd"
+      end_time:
+        type: expr
+        expr: "${EndTimestamp}"
+        transformations:
+          - type: type_conversion
+            output_data_type:
+              type: date_part
+              parse: "yyyy-MM-dd"
+      others:
+        type: map
+        entries:
+          TheTradeDesk__PrimaryGoal: PrimaryGoal
+          TheTradeDesk__BaseBid: BaseBid
+          TheTradeDesk__MaxBid: MaxBid
+          TheTradeDesk__Budget: Budget
+          TheTradeDesk__ImpressionBudget: ImpressionBudget
+      partner_name:
+        type: const
+        value: TheTradeDesk
+      entity_type:
+        type: const
+        value: campaign

@@ -1,0 +1,22 @@
+c008:
+  mappings_config: "/etc/opt/aqfer/mappings.yaml"
+  jobs:
+    # When running in c900 prod sandbox, change the job name from ex1-mapper to sandbox-mapper
+    mapper:
+      type: event_import
+      partner: TheTradeDesk
+      mode: append
+      event_schema:
+        name: aqfer_metadata
+      use_dynamic_conversion: true
+      publish_metrics: false
+      input:
+        - event_schema:
+            name: ttd_campaign
+          source: TheTradeDesk
+          data_channel: input_ttd_campaign_metadata
+      output:
+        - event_schema:
+            name: aqfer_metadata
+          data_channels:
+            - output_aqfer_metadata
