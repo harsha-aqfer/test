@@ -2,7 +2,7 @@ work_area: s3://~~cid~~.default@com.aqfer.~~cid~~.sandbox/transform/examples/exa
 input:
   name: input_ttd_campaign_metadata
   format: csv
-
+  name2: input_ttd_campaign_metadata
   csv:
     has_header: false
     schema:
