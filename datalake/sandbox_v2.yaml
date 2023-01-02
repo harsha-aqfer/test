@@ -34,7 +34,7 @@ job_kinds:
       - transform
     required_files:
       - name: config.yaml
-        suffix: "\nwork_area: {{.CloudStorage}}://{{.Cid}}.default@{{.TmpBucket}}/amdp/{{.Cid}}/{{.SandboxName}}/{{.JobName}}/{{.RunId}}"
+        suffix: "\nwork_area: {{.CloudStorage}}://{{.Cid}}.default@{{.TempBucket}}/amdp/{{.Cid}}/{{.SandboxName}}/{{.JobName}}/{{.RunId}}"
   transform: &Transform
     images: *Images
     resources:
