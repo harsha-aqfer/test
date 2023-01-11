@@ -4,208 +4,209 @@ images:
 
 job_kinds:
   collator:
-    parameters:
-      images: &Images
-        aws:
-          default: *adl-job-aws-us-west-2
-        gcp:
-          us-east4: *adl-job-gcp-us-east4
-      resources:
-        requests:
-          cpu: 500m
-          memory: 400Mi
-      executable: |
-        - /opt/aqfer/hetero-collate
-        - driver
-        - --config-file
-        - /etc/opt/aqfer/config.yaml
-        - --credentials-file
-        - /etc/opt/aqfer/credentials.yaml
-        - --stage
-        - split
-        - --stage
-        - collate
-        - --stage
-        - sort
-        - --stage
-        - merge-plan
-        - --stage
-        - merge-do
-        - --stage
-        - transform
-    required_system_files:
-      - config.yaml
+    images: &Images
+      aws:
+        default: *adl-job-aws-us-west-2
+      gcp:
+        us-east4: *adl-job-gcp-us-east4
+    resources:
+      requests:
+        cpu: 500m
+        memory: 400Mi
+    executable: |
+      - /opt/aqfer/hetero-collate
+      - driver
+      - --config-file
+      - /etc/opt/aqfer/config.yaml
+      - --credentials-file
+      - /etc/opt/aqfer/credentials.yaml
+      - --stage
+      - split
+      - --stage
+      - collate
+      - --stage
+      - sort
+      - --stage
+      - merge-plan
+      - --stage
+      - merge-do
+      - --stage
+      - transform
+    required_files:
+      - name: config.yaml
+        prefix: "work_area: {{.CloudStorage}}://{{.Cid}}.default@{{.TmpBucket}}/amdp/{{.Cid}}/{{.SandboxName}}/{{.JobName}}/{{.RunId}}\n"
   transform: &Transform
-    parameters:
-      images: *Images
-      resources:
-        requests:
-          cpu: 500m
-          memory: 400Mi
-      executable: |
-        - /opt/aqfer/transform
-        - driver
-        - --config-file
-        - /etc/opt/aqfer/config.yaml
-        - --credentials-file
-        - /etc/opt/aqfer/credentials.yaml
-        - --stage
-        - transform
-    required_system_files:
-      - config.yaml
+    images: *Images
+    resources:
+      requests:
+        cpu: 500m
+        memory: 400Mi
+    executable: |
+      - /opt/aqfer/transform
+      - driver
+      - --config-file
+      - /etc/opt/aqfer/config.yaml
+      - --credentials-file
+      - /etc/opt/aqfer/credentials.yaml
+      - --stage
+      - transform
+    required_files:
+      - name: config.yaml
   mapper-v2: *Transform
   split-gz:
-    parameters:
-      images: *Images
-      resources:
-        requests:
-          cpu: 500m
-          memory: 400Mi
-      executable: |
-        - /opt/aqfer/split-files
-        - split
-        - --config-file
-        - /etc/opt/aqfer/config.yaml
-        - --credentials-file
-        - /etc/opt/aqfer/credentials.yaml
-    required_system_files:
-      - config.yaml
+    images: *Images
+    resources:
+      requests:
+        cpu: 500m
+        memory: 400Mi
+    executable: |
+      - /opt/aqfer/split-files
+      - split
+      - --config-file
+      - /etc/opt/aqfer/config.yaml
+      - --credentials-file
+      - /etc/opt/aqfer/credentials.yaml
+    required_files:
+      - name: config.yaml
   mapper:
-    parameters:
-      images: *Images
-      resources:
-        requests:
-          cpu: 500m
-          memory: 400Mi
-      executable: |
-        - /opt/aqfer/k8s-spark
-        - run
-        - --stats-folder
-        - log-wrap
-        - --jars-folder
-        - /opt/aqfer
-        - -v
-        - --
-        - --driver-memory
-        - 1500M
-        - --executor-memory
-        - 2500M
-        - --name
-        - '{{.JobName}}'
-        - --class
-        - com.aqfer.datalake.Main
-        - --conf
-        - spark.executor.instances=3
-        - --conf
-        - spark.yarn.executor.memoryOverhead=1024
-        - --conf
-        - spark.executorEnv.CONFIG_BUNDLE=s3://{{.Bucket}}/amdp/{{.Cid}}/{{.SandboxName}}/{{.JobName}}/{{.RunId}}/bundle.yaml
-        - --conf
-        - spark.executorEnv.POD_NAME=$(POD_NAME)
-        - --conf
-        - spark.executorEnv.CID={{.Cid}}
-        - /opt/aqfer/datalakeetl_2.11.jar
-        - file:///etc/opt/aqfer/jobconf.yaml
-        - '{{.Cid}}'
-        - '{{.JobName}}'
-    required_system_files:
-      - jobconf.yaml
-      - data_channels.yaml
-      - mappings.yaml
+    images: *Images
+    resources:
+      requests:
+        cpu: 500m
+        memory: 400Mi
+    executable: |
+      - /opt/aqfer/k8s-spark
+      - run
+      - --stats-folder
+      - log-wrap
+      - --jars-folder
+      - /opt/aqfer
+      - -v
+      - --
+      - --driver-memory
+      - 1500M
+      - --executor-memory
+      - 2500M
+      - --name
+      - '{{.JobName}}'
+      - --class
+      - com.aqfer.datalake.Main
+      - --conf
+      - spark.executor.instances=3
+      - --conf
+      - spark.yarn.executor.memoryOverhead=1024
+      - --conf
+      - spark.executorEnv.CONFIG_BUNDLE={{.BucketPrefixWithoutCredential}}/amdp/{{.Cid}}/{{.SandboxName}}/{{.JobName}}/{{.RunId}}/bundle.yaml
+      - --conf
+      - spark.executorEnv.POD_NAME=$(POD_NAME)
+      - --conf
+      - spark.executorEnv.CID={{.Cid}}
+      - /opt/aqfer/datalakeetl_2.11.jar
+      - file:///etc/opt/aqfer/jobconf.yaml
+      - '{{.Cid}}'
+      - '{{.JobName}}'
+    required_files:
+      - name: jobconf.yaml
+      - name: data_channels.yaml
+      - name: mappings.yaml
   ctas:
-    parameters:
-      images: *Images
-      resources:
-        requests:
-          cpu: 500m
-          memory: 128Mi
-      executable: |
-        - /opt/aqfer/ctas
-        - --credentials-file
-        - /etc/opt/aqfer/credentials.yaml
-        - /etc/opt/aqfer/config.yaml
-    required_system_files:
-      - config.yaml
+    images: *Images
+    resources:
+      requests:
+        cpu: 500m
+        memory: 128Mi
+    executable: |
+      - /opt/aqfer/ctas
+      - --credentials-file
+      - /etc/opt/aqfer/credentials.yaml
+      - /etc/opt/aqfer/config.yaml
+    required_files:
+      - name: config.yaml
   cmapper:
-    parameters:
-      images: *Images
-      resources:
-        requests:
-          cpu: 500m
-          memory: 128Mi
-      executable: |
-        - java
-        - -jar
-        - /opt/aqfer-yaml-gen/yaml-gen-assembly.jar
-        - -c 
-        - /etc/opt/aqfer/connector.yaml
-        - -m 
-        - /etc/opt/aqfer/mappings.yaml
-        - -o 
-        - /etc/opt/aqfer/mappings.yaml
-        - /opt/aqfer/k8s-spark
-        - run
-        - \--stats-folder
-        - log-wrap
-        - \--jars-folder
-        - /opt/aqfer
-        - \-v
-        - \--
-        - \--driver-memory
-        - 1500M
-        - \--executor-memory
-        - 2500M
-        - \--name
-        - '{{.JobName}}'
-        - \--class
-        - com.aqfer.datalake.Main
-        - \--conf
-        - spark.executor.instances=3
-        - \--conf
-        - spark.yarn.executor.memoryOverhead=1024
-        - \--conf
-        - spark.executorEnv.CONFIG_BUNDLE=s3://{{.Bucket}}/amdp/{{.Cid}}/{{.SandboxName}}/{{.JobName}}/{{.RunId}}/bundle.yaml
-        - \--conf
-        - spark.executorEnv.POD_NAME=$(POD_NAME)
-        - \--conf
-        - spark.executorEnv.CID={{.Cid}}
-        - /opt/aqfer/datalakeetl_2.11.jar
-        - file:///etc/opt/aqfer/jobconf.yaml
-        - '{{.Cid}}'
-        - '{{.JobName}}'
-    required_system_files:
-      - jobconf.yaml
-      - data_channels.yaml
-      - mappings.yaml
-      - connector.yaml
+    images: *Images
+    resources:
+      requests:
+        cpu: 500m
+        memory: 128Mi
+    executable: |
+      - java
+      - -jar
+      - /opt/aqfer-yaml-gen/yaml-gen-assembly.jar
+      - -c 
+      - /etc/opt/aqfer/connector.yaml
+      - -m 
+      - /etc/opt/aqfer/mappings.yaml
+      - -o 
+      - /etc/opt/aqfer/mappings.yaml
+      - /opt/aqfer/k8s-spark
+      - run
+      - \--stats-folder
+      - log-wrap
+      - \--jars-folder
+      - /opt/aqfer
+      - \-v
+      - \--
+      - \--driver-memory
+      - 1500M
+      - \--executor-memory
+      - 2500M
+      - \--name
+      - '{{.JobName}}'
+      - \--class
+      - com.aqfer.datalake.Main
+      - \--conf
+      - spark.executor.instances=3
+      - \--conf
+      - spark.yarn.executor.memoryOverhead=1024
+      - \--conf
+      - spark.executorEnv.CONFIG_BUNDLE={{.BucketPrefixWithoutCredential}}/amdp/{{.Cid}}/{{.SandboxName}}/{{.JobName}}/{{.RunId}}/bundle.yaml
+      - \--conf
+      - spark.executorEnv.POD_NAME=$(POD_NAME)
+      - \--conf
+      - spark.executorEnv.CID={{.Cid}}
+      - /opt/aqfer/datalakeetl_2.11.jar
+      - file:///etc/opt/aqfer/jobconf.yaml
+      - '{{.Cid}}'
+      - '{{.JobName}}'
+    required_files:
+      - name: jobconf.yaml
+      - name: data_channels.yaml
+      - name: mappings.yaml
+      - name: connector.yaml
   connector:
-    parameters:
-      images: *Images
-      resources:
-        requests:
-          cpu: 500m
-          memory: 128Mi
-      executable: |
-        - java
-        - -jar
-        - /opt/aqfer/core_2.13.jar
-        - /etc/opt/aqfer/config.yaml
-        - file:///opt/aqfer/googleads_2.13.jar
-        - file:///opt/aqfer/facebook_2.13.jar
-        - file:///opt/aqfer/bingads_2.13.jar
-        - file:///opt/aqfer/tradedesk_2.13.jar
-        - file:///opt/aqfer/nielsen_2.13.jar
-    required_system_files:
-      - config.yaml
+    images: *Images
+    resources:
+      requests:
+        cpu: 500m
+        memory: 128Mi
+    executable: |
+      - java
+      - -jar
+      - /opt/aqfer/core_2.13.jar
+      - /etc/opt/aqfer/config.yaml
+      - file:///opt/aqfer/googleads_2.13.jar
+      - file:///opt/aqfer/facebook_2.13.jar
+      - file:///opt/aqfer/bingads_2.13.jar
+      - file:///opt/aqfer/tradedesk_2.13.jar
+      - file:///opt/aqfer/nielsen_2.13.jar
+    required_files:
+      - name: config.yaml
 
-bundle_file:
-  - pod_dest_folder: /etc/opt/aqfer/
-    github_src_paths:
-      - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/system/
-      - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/credentials.yaml
-  - pod_dest_folder: /opt/aqfer/user/
-    github_src_paths:
-      - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/user/
+config_bundle:
+  destination: "{{.BucketPrefixWithCredential}}/amdp/{{.Cid}}/{{.SandboxName}}/{{.JobName}}/bundle.yaml"
+  sources:
+    - file_type: system
+      pod_dest_folder: /etc/opt/aqfer/
+      github_src_paths:
+        - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/system/
+    - file_type: user
+      pod_dest_folder: /opt/aqfer/user/
+      github_src_paths:
+        - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/user/
+    - file_type: other
+      pod_dest_folder: /etc/opt/aqfer/
+      github_src_paths:
+        - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/credentials.yaml
 
 github_file_paths:
   sandbox_base_path: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/
@@ -215,6 +216,3 @@ github_file_paths:
   override_k8s_job_template: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/template.yaml
   job_override_path: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/override.yaml
   sandbox_override_path: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/override.yaml
-
-s3_paths:
-  bundle_file_path: "{{.Bucket}}/amdp/{{.Cid}}/{{.SandboxName}}/{{.JobName}}/{{.RunId}}/bundle.yaml"
