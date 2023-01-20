@@ -1,0 +1,114 @@
+work_area: s3://com.aqfer-preprod.tmp/aditya-sinkset/work-area/t2/
+inputs:
+  - name: aio
+    locations:
+      - folder: s3://c008.default@com.aqfer.aio.dynamostreamlogs/aio/success/dyn_aio/2022/12/31/*/
+    format: dynamo_log
+    key:
+      - sort_key
+      - partition_key
+    suffixes: [ '' ]
+    dynamo_log:
+      key_schema:
+        type: record
+        name: Keys
+        fields:
+          - name: sort-key
+            type: string
+          - name: partition-key
+            type: string
+      item_schema:
+        name: graph_node
+        type: record
+        fields:
+          - name: attributes
+            type:
+              - 'null'
+              - type: map
+                values:
+                  - string
+                  - type: array
+                    items:
+                      type: string
+          - name: edges
+            type:
+              - 'null'
+              - type: map
+                values: string
+
+    transform:
+      - python:
+          file: '{{env "USER_DIR"}}/simplify.py'
+
+  - name: sinkset
+    locations:
+      - folder: s3://c008.default@com.aqfer.aio.dynamostreamlogs/aio/success/dyn_sinkset/2022/12/31/*/
+    format: dynamo_log
+    key:
+      - sort-key
+      - partition-key
+    suffixes: [ '' ]
+    dynamo_log:
+      key_schema:
+        type: record
+        name: Keys
+        fields:
+          - name: sort-key
+            type: string
+          - name: partition-key
+            type: string
+      item_schema:
+        name: graph_node_2
+        type: record
+        fields:
+          - name: attributes
+            type:
+              - 'null'
+              - type: map
+                values:
+                  - string
+                  - type: array
+                    items:
+                      type: string
+          - name: edges
+            type:
+              - 'null'
+              - type: map
+                values: string
+    transform:
+      - rename_schema:
+          dynamo_row: dynamo_row_sinkSet
+      - python:
+          file: '{{env "USER_DIR"}}/simplify.py'
+
+sort:
+  num_partition_keys: 0
+  key_names:
+    - sort-key
+    - partition-key
+  project:
+    '.':
+      field_names: [ sort-key, partition-key ]
+
+transform:
+  - python:
+      file: '{{env "USER_DIR"}}/diff.py'
+
+outputs:
+  - name: test_output
+    destination: s3://c008.default@com.aqfer-preprod.tmp/aditya-sinkset/output/
+
+  - name: test_output_filtered
+    destination: s3://c008.default@com.aqfer-preprod.tmp/aditya-sinkset/output_filtered/
+    transform:
+      - python:
+          file: '{{env "USER_DIR"}}/filtered.py'
+
+# outputs:
+#   - name: test_output
+#     destination: s3://c008.default@com.aqfer-preprod.tmp/aditya-sinkset/work-area/t1/
+#   - name: test_output_filtered
+#     destination: s3://c008.default@com.aqfer-preprod.tmp/aditya-sinkset/work-area/t1_filtered/
+#     transform:
+#       - python: 
+#           file: '{{env "USER_DIR"}}/filter.py' # filter on valid == False and return only pk and sk # essentially show pk/sk for all not matching records, probably, having the content as well will be useful.
