@@ -1,1 +1,98 @@
-""
+work_area: s3://c008.default@com.aqfer.preprod.tmp/workarea/{{env "POD_NAME"}}
+inputs:
+  - locations:
+      - folder: s3://c008.default@com.aqfer.aio.dynamostreamlogs/aio/success/dyn_sinkset/2023/01/19/11/
+    name: test
+    format: dynamo_log
+    # suffixes: ['']
+    dynamo_log:
+      key_schema:
+        type: record
+        name: graph_key
+        fields:
+          - name: pk
+            type: string
+          - name: sk
+            type: string
+      item_schema:
+        name: graph_node
+        type: record
+        fields:
+          - name: attributes
+            type:
+              - 'null'
+              - type: map
+                values:
+                  - string
+                  - type: array
+                    items:
+                      type: string
+          - name: edges
+            type:
+              - 'null'
+              - type: map
+                values: string
+transform:
+  - python:
+      code: |-
+        code_link_33
+outputs:
+  - name: has_attrs
+    destination: s3://c008.default@com.aqfer-preprod.tmp/aditya-sinkset/attrs/
+    format: avro
+    split_by:
+      key:
+        - tenant_id
+        - node_type
+        - node_domain
+        - neighbor_type
+        - neighbor_domain
+        - provider
+        - batch_id
+      strip_key: true
+    project:
+      '.':
+        omit_unless: has_attrs
+        field_names:
+          - tenant_id
+          - node_type
+          - node_domain
+          - neighbor_type
+          - neighbor_domain
+          - provider
+          - batch_id
+          - node_id
+          - operation
+          - neighbors
+          - attributes
+          - others
+
+  - name: has_edges
+    destination: s3://c008.default@com.aqfer-preprod.tmp/aditya-sinkset/edges/
+    format: avro
+    split_by:
+      key:
+        - tenant_id
+        - node_type
+        - node_domain
+        - neighbor_type
+        - neighbor_domain
+        - provider
+        - batch_id
+      strip_key: true
+    project:
+      '.':
+        omit_unless: has_edges
+        field_names:
+          - tenant_id
+          - node_type
+          - node_domain
+          - neighbor_type
+          - neighbor_domain
+          - provider
+          - batch_id
+          - node_id
+          - operation
+          - neighbors
+          - attributes
+          - others
