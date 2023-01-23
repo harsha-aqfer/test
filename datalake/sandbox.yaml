@@ -11,8 +11,8 @@ job_kinds:
         us-east4: *adl-job-gcp-us-east4
     resources:
       requests:
-        cpu: 500m
-        memory: 400Mi
+        cpu: "{{.Override.Resources.Requests.Cpu}}"
+        memory: "{{.Override.Resources.Requests.Memory}}"
     executable: |
       - /opt/aqfer/hetero-collate
       - driver
@@ -39,8 +39,8 @@ job_kinds:
     images: *Images
     resources:
       requests:
-        cpu: 500m
-        memory: 400Mi
+        cpu: "{{.Override.Resources.Requests.Cpu}}"
+        memory: "{{.Override.Resources.Requests.Memory}}"
     executable: |
       - /opt/aqfer/transform
       - driver
@@ -57,8 +57,8 @@ job_kinds:
     images: *Images
     resources:
       requests:
-        cpu: 500m
-        memory: 400Mi
+        cpu: "{{.Override.Resources.Requests.Cpu}}"
+        memory: "{{.Override.Resources.Requests.Memory}}"
     executable: |
       - /opt/aqfer/split-files
       - split
@@ -72,8 +72,8 @@ job_kinds:
     images: *Images
     resources:
       requests:
-        cpu: 500m
-        memory: 400Mi
+        cpu: "{{.Override.Resources.Requests.Cpu}}"
+        memory: "{{.Override.Resources.Requests.Memory}}"
     executable: |
       - /opt/aqfer/k8s-spark
       - run
@@ -84,17 +84,17 @@ job_kinds:
       - -v
       - --
       - --driver-memory
-      - 1500M
+      - {{.Override.Executable.Spark.DriverMemory}}
       - --executor-memory
-      - 2500M
+      - {{.Override.Executable.Spark.ExecutorMemory}}
       - --name
       - '{{.JobName}}'
       - --class
       - com.aqfer.datalake.Main
       - --conf
-      - spark.executor.instances=3
+      - spark.executor.instances={{.Override.Executable.Spark.NumberOfExecutors}}
       - --conf
-      - spark.yarn.executor.memoryOverhead=1024
+      - spark.yarn.executor.memoryOverhead={{.Override.Executable.Spark.ExecutorMemoryOverHead}}
       - --conf
       - spark.executorEnv.CONFIG_BUNDLE={{.BucketPrefixWithoutCredential}}/amdp/{{.Cid}}/{{.SandboxName}}/{{.JobName}}/{{.RunId}}/bundle.yaml
       - --conf
@@ -113,8 +113,8 @@ job_kinds:
     images: *Images
     resources:
       requests:
-        cpu: 500m
-        memory: 128Mi
+        cpu: "{{.Override.Resources.Requests.Cpu}}"
+        memory: "{{.Override.Resources.Requests.Memory}}"
     executable: |
       - /opt/aqfer/ctas
       - --credentials-file
@@ -126,8 +126,8 @@ job_kinds:
     images: *Images
     resources:
       requests:
-        cpu: 500m
-        memory: 128Mi
+        cpu: "{{.Override.Resources.Requests.Cpu}}"
+        memory: "{{.Override.Resources.Requests.Memory}}"
     executable: |
       - java
       - -jar
@@ -177,8 +177,8 @@ job_kinds:
     images: *Images
     resources:
       requests:
-        cpu: 500m
-        memory: 128Mi
+        cpu: "{{.Override.Resources.Requests.Cpu}}"
+        memory: "{{.Override.Resources.Requests.Memory}}"
     executable: |
       - java
       - -jar
@@ -207,12 +207,3 @@ config_bundle:
       pod_dest_folder: /etc/opt/aqfer/
       github_src_paths:
         - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/credentials.yaml
-
-github_file_paths:
-  sandbox_base_path: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/
-  job_base_path: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/
-  system_files_base_path: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/system/
-  user_files_base_path: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/user/
-  override_k8s_job_template: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/template.yaml
-  job_override_path: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/override.yaml
-  sandbox_override_path: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/override.yaml
