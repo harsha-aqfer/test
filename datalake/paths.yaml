@@ -1,0 +1,8 @@
+github_file_paths:
+  sandbox_base_path: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/
+  job_base_path: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/
+  system_files_base_path: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/system/
+  user_files_base_path: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/user/
+  override_k8s_job_template: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/template.yaml
+  job_override_path: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/override.yaml
+  sandbox_override_path: datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/override.yaml
