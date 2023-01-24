@@ -7,7 +7,6 @@ job_kinds:
     executable:
       spark:
         driver_memory: 1400M
-        executor_memory: 1400M
         number_of_executors: 2
         executor_memory_over_head: 1024
         driver_memory_over_head: 1024
