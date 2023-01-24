@@ -14,8 +14,8 @@ job_kinds:
   collator:
     resources:
       requests:
-        cpu: 1
-        memory: 4Gi
+        cpu: 20
+        memory: 20Gi
   mapper-v2:
     resources:
       requests:
