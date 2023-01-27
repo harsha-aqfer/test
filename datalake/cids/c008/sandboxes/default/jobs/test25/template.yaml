@@ -30,7 +30,7 @@ spec:
             - sh
             - -c
             - |
-               echo "Hello World!" && exit 137
+               sleep 30000
           env:
             - name: AQFER_LAKEVIEW_HOST
               value: https://lakeview.api-dev.aqfer.net
