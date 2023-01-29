@@ -30,7 +30,7 @@ spec:
             - sh
             - -c
             - |
-               xxx
+               sleep 60 && xxx
           env:
             - name: AQFER_LAKEVIEW_HOST
               value: https://lakeview.api-dev.aqfer.net
