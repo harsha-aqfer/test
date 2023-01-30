@@ -40,11 +40,6 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
-            - name: XYZ
-              valueFrom:
-                secretKeyRef:
-                  key: XYZ
-                  name: {{.Cid}}
             - name: POD_IP
               valueFrom:
                 fieldRef:
