@@ -1,0 +1,55 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{.JobName}}
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      activeDeadlineSeconds: 3600
+      containers:
+        - command:
+            - /opt/aqfer/log-wrap
+            - --name
+            - {{.JobName}}
+            - --sandbox
+            - {{.SandboxName}}
+            - --cid
+            - {{.Cid}}
+            - --run-id
+            - {{.RunId}}
+            - --config
+            - {{.ConfigPath}}
+            - --dest
+            - {{.LogPath}}/$(POD_NAME)
+            - --lakeview-domain
+            - lakeview.api-dev.aqfer.net
+            - --auth-domain
+            - auth.api-dev.aqfer.net
+            - --
+            - sh
+            - -c
+            - |
+               sleep 60 && xxx
+          env:
+            - name: AQFER_LAKEVIEW_HOST
+              value: https://lakeview.api-dev.aqfer.net
+            - name: AQFER_REFRESH_TOKEN
+              value: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODM1MjM2NjYsImp0aSI6Ijc0ZGJlYzI5LWI2MzMtMTFlYy05Nzk5LTAyYmI2Y2Y2NDFjMiIsImlhdCI6MTY0OTMwOTI2NiwidXNlciI6IkhhcnNoYSIsImVtYWlsIjoiaGFyc2hhQHN0YXJ0c21hcnRsYWJzLmNvbSIsInNjb3BlIjp7ImNpZHMiOlsiYzAwOCJdfSwidHlwZSI6InJlZnJlc2hfdG9rZW4iLCJyb2xlcyI6WyJhcWZlcl9hZG1pbiJdLCJwdXJwb3NlIjoiY2xpZW50IG1nbXQgaW50ZWcgdGVzdCJ9.zqjSXzFo-22dXA8Yy0TQbAHpfyS5sKAggsNluRCIsX0"
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          #image: 965106989073.dkr.ecr.us-west-2.amazonaws.com/adl-uncertified:dev_v1.2207.0-build.7ffbf99-1667802156
+          image: 965106989073.dkr.ecr.us-west-2.amazonaws.com/adl-uncertified:dev_v1.2357.0-build.c6c84ae-1674967979
+          name: {{.JobName}}
+          resources:
+            requests:
+              memory: 400Mi
+              cpu: 500m
+      restartPolicy: Never
+      serviceAccountName: spark
