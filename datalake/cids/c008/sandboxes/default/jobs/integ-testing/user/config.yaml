@@ -35,7 +35,7 @@ inputs:
 transform:
   - python:
       code: |-
-        code_link_33
+        code_link_34
 outputs:
   - name: has_attrs
     destination: s3://c008.default@com.aqfer-preprod.tmp/aditya-sinkset/attrs/
