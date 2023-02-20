@@ -34,7 +34,6 @@ job_kinds:
       - transform
     required_files:
       - name: config.yaml
-        prefix: "work_area: {{.WorkAreaPrefix}}/amdp/{{.Cid}}/{{.SandboxName}}/{{.JobName}}/{{.RunId}}\n"
   transform: &Transform
     images: *Images
     resources:
