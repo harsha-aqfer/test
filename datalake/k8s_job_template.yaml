@@ -29,6 +29,8 @@ spec:
           env:
             - name: CID
               value: {{.Cid}}
+            - name: USER_DIR
+              value: '/opt/aqfer/user'  
             - name: a
               value: {{.UserParams.a}}
             - name: AQFER_LAKEVIEW_HOST
