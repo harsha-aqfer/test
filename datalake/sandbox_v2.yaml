@@ -34,7 +34,7 @@ job_kinds:
       - transform
     required_files:
       - name: config.yaml
-        prefix: "work_area: {{.WorkAreaPrefix}}}/amdp/{{.Cid}}/{{.SandboxName}}/{{.JobName}}/{{.RunId}}\n"
+        prefix: "work_area: {{.WorkAreaPrefix}}/amdp/{{.Cid}}/{{.SandboxName}}/{{.JobName}}/{{.RunId}}\n"
   transform: &Transform
     images: *Images
     resources:
@@ -52,7 +52,7 @@ job_kinds:
       - transform
     required_files:
       - name: config.yaml
-        prefix: "work_area: {{.WorkAreaPrefix}}}/amdp/{{.Cid}}/{{.SandboxName}}/{{.JobName}}/{{.RunId}}\n"
+        prefix: "work_area: {{.WorkAreaPrefix}}/amdp/{{.Cid}}/{{.SandboxName}}/{{.JobName}}/{{.RunId}}\n"
   mapper-v2: *Transform
   split-gz:
     images: *Images
