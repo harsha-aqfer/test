@@ -1,22 +1,4 @@
-#! /usr/bin/env awk BEGIN{av=ARGV[1];system("aws\ts3\tcp\t"av"\ts3://com.aqfer.preprod.config/adl/c008/basis-others-dcm-evt-split/config.yaml")}
-- path: /etc/opt/aqfer/vtms.yaml
-  permission: 0770
-  format: yaml
-  contents:
-    default:
-      api_domain: api.aqfer.net
-      credentials: prod_auth_refresh_token
-      s3_type: s3aq
-    # preprod:
-    #   api_domain: api-preprod.aqfer.net
-    #   credentials: preprod_auth_refresh_token
-    #   s3_type: s3aq
-    prod:
-      api_domain: api.aqfer.net
-      credentials: prod_auth_refresh_token
-      s3_type: s3aq
-
-
+#! /usr/bin/env awk BEGIN{av=ARGV[1];system("aws\ts3\tcp\t"av"\ts3://com.aqfer.prod.config/adl/c043/basis-imp-gcmv2-imp-hourly/config.yaml")}
 - path: /etc/opt/aqfer/credentials.yaml
   permission: 0770
   format: yaml
@@ -27,10 +9,32 @@
         access_key: ${BOT_AWS_ACCESS_KEY}
         secret_key: ${BOT_AWS_SECRET_KEY}
         region: us-west-2
-        role_arn:  arn:aws:iam::965106989073:role/BotsAccessRole
-      prod_auth_refresh_token:
-        refresh_token: ${PROD_AUTH_REFRESH_TOKEN}
+        role_arn: arn:aws:iam::585893145059:role/BotsAccessRole
+      centro_google_cloud_storage:
+        application_name: aDL
+        json_key_file_path: file:///etc/opt/aqfer/dcm_key.json
+        network_code: "40576787"
+        project_id: centrocloud
+        type: gcs
+      prod_aqfer_refresh_token:
+        refresh_token: ${AQFER_REFRESH_TOKEN}
         type: aqfer
+- path: /etc/opt/aqfer/vtms.yaml
+  permission: 0770
+  format: yaml
+  contents:
+    default:
+      api_domain: api.aqfer.net
+      credentials: prod_aqfer_refresh_token
+      s3_type: s3aq
+    preprod:
+      api_domain: api-preprod.aqfer.net
+      credentials: preprod_aqfer_refresh_token
+      s3_type: s3aq
+    prod:
+      api_domain: api.aqfer.net
+      credentials: prod_aqfer_refresh_token
+      s3_type: s3aq
 - path: /etc/opt/aqfer/data_channels.yaml
   permission: 0770
   format: yaml
@@ -39,43 +43,441 @@
       tmp:
         type: s3aq
         format: csv
-        bucket: com.aqfer.preprod.tmp
-        base_path: /tmp
+        bucket: com.aqfer.c043.tmp
+        base_path: "/"
         pattern: "*"
         credentials: default
-      dcm_input:
+        
+      gcm_impressions_input:
         type: s3aq
         format: csv
-        bucket: com.aqfer.preprod.datalake
-        base_path: /c043/click/input/
-        pattern: "*"
+        bucket: com.aqfer.c043.input
+        base_path: /dcm/input/runid={{env "UPSTREAM_RUN_ID"}}
+        pattern: dcm_account428001_impression_*
+        options:
+          has_header: true
+          is_compressed: true
         credentials: default
-      dcm_output:
+      gcm_impression_invalid:
+        base_path: /dcm/input/quarantine/impression_v2
         type: s3aq
-        format: csv
-        bucket: com.aqfer.preprod.datalake
-        base_path: /c043/click/output/
+        format: avro
+        bucket: com.aqfer.c043.input
         pattern: "*"
         credentials: default
-
+      skipped_file:
+        base_path: "/dcm/input/skipped/impression_v2"
+        type: s3aq
+        format: parquet
+        bucket: com.aqfer.c043.input
+        pattern: "*"
+        credentials: default 
+      gcm_impressions_output:
+        type: s3aq
+        format: avro
+        bucket: com.aqfer.c043.datalake
+        base_path: "/data/dbs/aqfer/tables/aqfer_impressions_v2/avro"
+        credentials: default
+      gcm_impressions_output_parquet:
+        type: s3aq
+        format: parquet
+        bucket: com.aqfer.c043.datalake
+        base_path: "/data/dbs/aqfer/tables/aqfer_impressions_v2/parquet"
+        credentials: default
+        
 - path: /etc/opt/aqfer/jobconf.yaml
   permission: 0770
   format: yaml
   contents:
     c043:
+      mappings_config: '/etc/opt/aqfer/mappings.yaml'
       plugins_package: 'com.aqfer.datalake.gen'
       plugins: []
       jobs:
-        basis-others-dcm-evt-split:
-          type: split_gzip_files
-          tmp_data_channel: tmp
-          split_size_in_mb: 40
+        basis-imp-gcmv2-imp-hourly:
+          type: event_import
+          partner: basis
+          mode: append
           produce_metrics_at: 'result.yaml'
           publish_metrics: false
+          use_dynamic_conversion: true
+          event_schema:
+            name: aqfer_impression
+            version: 2.0
           input:
-          - event_type: click
-            data_channel: dcm_input
+            - data_channel: gcm_impressions_input
+              validation:
+                  data_channel: gcm_impression_invalid
+                  rules:
+                    User ID:
+                      type: string
+                      block:
+                      - '0'
+              verification:
+                head_rows: 1
+                error_file_list_data_channel: skipped_file
+                error_on_failure: false
+              event_schema:
+                name: gcm_impressions
+              source: gcm_impressions
           output:
-          - event_type: click
-            data_channels:
-            - dcm_output
+            - event_schema:
+                name: aqfer_impression
+                version: 2.0
+              data_channels:
+                - gcm_impressions_output
+- path: /etc/opt/aqfer/mappings.yaml
+  permission: 0770
+  format: yaml
+  contents:
+    schemas:
+      #uniform
+      http_schema:
+      - version: 2.1
+        columns:
+          - name: status_code
+            required: false
+          - name: tag_url
+            required: false
+            data_type:
+              type: custom
+              schema: url_struct
+              version: 2.1
+          - name: cookie
+            data_type: map
+          - name: ip_info
+            required: false
+            data_type:
+              type: custom
+              schema: ip_struct
+              version: 2.0
+          - name: user_agent_info
+            data_type: map
+          - name: headers
+            data_type: map
+      ip_struct:
+      - version: 2.0
+        columns:
+          - name: ip_type
+            required: false
+          - name: ip_domain
+            required: false
+          - name: ip
+            required: false
+      url_struct:
+      - version: 2.1
+        columns:
+          - name: scheme
+            required: false
+          - name: host
+            required: false
+          - name: path
+            required: false
+          - name: query
+            data_type: map
+      entity_struct:
+      - version: 2.1
+        columns:
+          - name: entity_type
+            required: false
+          - name: entity_domain
+            required: false
+          - name: entity_id
+            required: false
+      #impressions
+      gcm_impressions:
+        columns:
+          - name: "Event Time"
+            data_type: string
+          - name: "User ID"
+            required: false
+            data_type: string
+          - name: "Advertiser ID"
+            required: false
+            data_type: string
+          - name: "Campaign ID"
+            required: false
+            data_type: string
+          - name: "Ad ID"
+            required: false
+            data_type: string
+          - name: "Rendering ID"
+            required: false
+            data_type: string
+          - name: "Creative Version"
+            required: false
+            data_type: string
+          - name: "Site ID (CM360)"
+            required: false
+            data_type: string
+          - name: "Placement ID"
+            required: false
+            data_type: string
+          - name: "Country Code"
+            required: false
+            data_type: string
+          - name: "State/Region"
+            required: false
+            data_type: string
+          - name: "Browser/Platform ID"
+            required: false
+            data_type: string
+          - name: "Browser/Platform Version"
+            required: false
+            data_type: string
+          - name: "Operating System ID"
+            required: false
+            data_type: string
+          - name: "Designated Market Area (DMA) ID"
+            required: false
+            data_type: string
+          - name: "City ID"
+            required: false
+            data_type: string
+          - name: "ZIP/Postal Code"
+            required: false
+            data_type: string
+          - name: "U Value"
+            required: false
+            data_type: string
+          - name: "Impression ID"
+            required: false
+            data_type: string
+          - name: "Referrer URL"
+            required: false
+            data_type: string
+          - name: "Partner1 ID"
+            required: false
+            data_type: string
+          - name: "Active View: Eligible Impressions"
+            required: false
+            data_type: string
+          - name: "Active View: Measurable Impressions"
+            required: false
+            data_type: string
+          - name: "Active View: Viewable Impressions"
+            required: false
+            data_type: string
+      aqfer_impression:
+      - version: 2.0
+        columns:
+          - entity_id
+          - name: event_timestamp
+            data_type: long
+          - event_type
+          - event_id
+          - name: source
+            required: false
+          - name: country_code
+            required: false
+          - name: region_code
+            required: false
+          - name: parent_event_id
+            required: false
+          - name: agency_id
+            required: false
+          - name: advertiser_id
+            required: false
+          - name: page_url
+            required: false
+            data_type:
+              type: custom
+              schema: url_struct
+              version: 2.1
+          - name: ad_url
+            required: false
+            data_type:
+              type: custom
+              schema: url_struct
+              version: 2.1
+          - name: page_referer_url
+            required: false
+            data_type:
+              type: custom
+              schema: url_struct
+              version: 2.1
+          - name: campaign_id
+            required: false
+          - name: ad_group_id
+            required: false
+          - name: creative_id
+            required: false
+          - name: placement_id
+            required: false
+          - name: other_marketing_program_levels
+            data_type: map
+          - name: media_partner
+            required: false
+          - name: inventory_partner
+            required: false
+          - name: supply_vendor_publisher_id
+            required: false
+          - name: site_id
+            required: false
+          - name: other_media_group_levels
+            data_type: map
+          - name: has_click_conversion
+            data_type: boolean
+            required: false
+          - name: has_click
+            data_type: boolean
+            required: false
+          - name: viewable
+            data_type: boolean
+            required: false
+          - name: cpm_currency
+            required: false
+          - name: cpm_paid
+            required: false
+            data_type: int
+          - name: cpm_cost
+            required: false
+            data_type: int
+          - name: keywords
+            required: false
+          - name: search_terms
+            required: false
+          - name: search_phrase
+            required: false
+          - name: other_entity_ids
+            data_type:
+              type: list
+              element:
+                type: custom
+                schema: entity_struct
+                version: 2.1
+          - name: other_event_ids
+            data_type: map
+          - name: http_info
+            data_type:
+              type: custom
+              schema: http_schema
+              version: 2.1
+          - name: geo
+            data_type: map
+          - name: metrics
+            data_type: map
+          - name: others
+            data_type: map
+        partitions:
+          - entity_type
+          - entity_domain
+          #- event_date
+          #- event_hour
+          - batch_id
+    schema_mappings:
+  ## COMMENT: Should we need to add prefix gcm__ for all keys inside map columns like others, metrics, etc.? # it is pending on Dan
+  ## COMMENT: Removing/quarentine all rows "User ID" of 0 or '' should happen at ingestion jobs or post collation? # we will do it input validation to filter these rows
+      gcm_impression_to_aqfer_impression:
+        input_schema: gcm_impressions
+        output_schema: 
+          name: aqfer_impression
+          version: 2.0
+        if_missing: ""
+        column_mappings:
+          entity_id: "User ID"
+          event_timestamp: "Event Time"
+          event_type:
+            type: const
+            value: "impr"
+          event_id: "Impression ID" 
+          parent_event_id: "Impression ID"
+          source:
+            type: const
+            value: "GCM"
+          country_code: "Country Code"
+          region_code: "State/Region"
+          agency_id:
+            type: const
+            value: "NA"
+          advertiser_id: "Advertiser ID"
+          page_referer_url:
+            type: inner
+            column_mappings:
+              host: "Referrer URL"
+              query:
+                type: map
+                entries: {}
+          campaign_id: "Campaign ID"
+          placement_id: "Placement ID"
+          other_marketing_program_levels:
+            type: map
+            entries:
+              ad_id: "Ad ID"
+          media_partner: "Partner1 ID"
+          site_id: "Site ID (CM360)"
+          other_media_group_levels:
+            type: map
+            entries:
+              rendering_id: "Rendering ID"
+              creative_version: "Creative Version"
+          other_entity_ids:
+            type: list
+            elements: []
+          other_event_ids:
+            type: map
+            entries:
+              impression_id: "Impression ID"
+          http_info:
+            type: inner
+            column_mappings:
+              cookie:
+                type: map
+                entries: {}
+              headers:
+                type: map
+                entries: {}
+              user_agent_info:
+                type: map
+                entries:
+                  browser_platform_id: "Browser/Platform ID"
+                  browser_platform_version: "Browser/Platform Version"
+                  operating_system_id:  "Operating System ID"
+          geo:
+            type: map
+            entries:
+              dma: "Designated Market Area (DMA) ID"
+              city_id: "City ID"
+              zip_code: "ZIP/Postal Code"
+          metrics:
+            type: map
+            entries:
+              active_view_eligible_impressions: "Active View: Eligible Impressions"
+              active_view_measurable_impressions: "Active View: Measurable Impressions"
+              active_view_viewable_impressions: "Active View: Viewable Impressions"
+          others:
+            type: map
+            entries: {}
+          clicks:
+            type: list
+            elements: []
+          engagements:
+            type: list
+            elements: []
+          entity_type:
+            type: const
+            value: "ck"
+          entity_domain:
+            type: const
+            value: "GCM"
+          event_date:
+            type: expr
+            expr: '${Event Time}'
+            transformations:
+              - type: type_conversion
+                output_data_type: long
+              - type: type_conversion
+                output_data_type:
+                  type: date_part
+                  format: 'yyyyMMdd'
+          event_hour:
+            type: expr
+            expr: '${Event Time}'
+            transformations:
+              - type: type_conversion
+                output_data_type: long
+              - type: type_conversion
+                output_data_type:
+                  type: date_part
+                  format: 'HH'
+          batch_id: $runid
