@@ -147,17 +147,17 @@ job_kinds:
       - \-v
       - \--
       - \--driver-memory
-      - 1500M
+      - {{.Override.Executable.Spark.DriverMemory}}
       - \--executor-memory
-      - 2500M
+      - {{.Override.Executable.Spark.ExecutorMemory}}
       - \--name
       - '{{.JobName}}'
       - \--class
       - com.aqfer.datalake.Main
       - \--conf
-      - spark.executor.instances=3
+      - spark.executor.instances={{.Override.Executable.Spark.NumberOfExecutors}}
       - \--conf
-      - spark.yarn.executor.memoryOverhead=1024
+      - spark.yarn.executor.memoryOverhead={{.Override.Executable.Spark.ExecutorMemoryOverHead}}
       - \--conf
       - spark.executorEnv.CONFIG_BUNDLE={{.BucketPrefixWithoutCredential}}/amdp/{{.Cid}}/{{.SandboxName}}/{{.JobName}}/{{.RunId}}/bundle.yaml
       - \--conf
