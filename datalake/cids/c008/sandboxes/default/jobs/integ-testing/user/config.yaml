@@ -3,7 +3,7 @@ inputs:
   - locations:
       - folder: s3://c008.default@com.aqfer.aio.dynamostreamlogs/aio/success/dyn_sinkset/2023/01/19/11/
     name: test
-    format: dynamo_log
+    format: dynamo_lo
     # suffixes: ['']
     dynamo_log:
       key_schema:
