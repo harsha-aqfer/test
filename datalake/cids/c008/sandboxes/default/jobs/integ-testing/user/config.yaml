@@ -49,7 +49,7 @@ outputs:
         - neighbor_domain
         - provider
         - batch_id
-      strip_key: false
+      strip_key: true
     project:
       '.':
         omit_unless: has_attrs
