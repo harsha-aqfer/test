@@ -3,8 +3,7 @@ inputs:
   - name: events
     key:
       - user_id
-    locations:
-      - folder: s3://c008.default@com.aqfer-dev.tmp/amdp-services/collator/examples/example-2/input/
+    locations: *locations
     format: csv
     csv:
       has_header: true
@@ -40,7 +39,7 @@ transform:
   - python:
       file: '{{env "USER_DIR"}}/transform.py'
 outputs:
-  - destination: s3://c008.default@com.aqfer-dev.tmp/amdp-services/collator/examples/example-2/output
+  - destination: *destination
     project:
       '.':
         field_names: [ 'hashed_user_id', 'events' ]
