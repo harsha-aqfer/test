@@ -1,0 +1,8 @@
+locations1: &location1
+  - folder: s3://c008.default@com.aqfer.preprod.tmp/data/input
+locations2: &location2
+              {{$cp := checkpoint_in "type=filter" "base_path=s3://c022.preprod@com.aqfer-preprod.tmp/sudheer/metadata_1/metadata_failed/archive/" "checkpoint_file=s3://c022.preprod@com.aqfer-preprod.tmp/sudheer/benchmark/checkpoint/10" "lookback_window_hours=80000"}}
+              locations: {{if not $cp}}[]{{else}}
+              {{range $cp}}- folder: {{.}}
+              {{end}}{{end}}
+destination: &destination s3://c008.default@com.aqfer.preprod.tmp/data/output
