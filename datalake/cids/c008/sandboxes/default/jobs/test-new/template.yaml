@@ -30,7 +30,7 @@ spec:
             - sh
             - -c
             - |
-               echo "Hello World!" && cat /opt/aqfer/user/res.yaml && /opt/aqfer/hetero-collate driver --config-file /etc/opt/aqfer/config.yaml --credentials-file /etc/opt/aqfer/credentials.yaml --stage split --stage collate --stage sort --stage merge-plan --stage merge-do --stage transform
+               echo "Hello World!" && /opt/aqfer/hetero-collate driver --config-file /etc/opt/aqfer/config.yaml --credentials-file /etc/opt/aqfer/credentials.yaml --stage split --stage collate --stage sort --stage merge-plan --stage merge-do --stage transform
           env:
             - name: USER_DIR
               value: '/opt/aqfer/user'
