@@ -18,8 +18,10 @@ spec:
             - {{.Cid}}
             - --run-id
             - {{.RunId}}
+            {{- range .ConfigPaths}}
             - --config
-            - {{.ConfigPath}}
+            - {{.}}
+            {{- end}}
             - --dest
             - {{.LogPath}}/$(POD_NAME)
             - --lakeview-domain
