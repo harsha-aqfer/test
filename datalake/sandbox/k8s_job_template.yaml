@@ -18,10 +18,8 @@ spec:
             - {{.JobName}}
             - --run-id
             - {{.RunId}}
-            {{- range .ConfigPaths}}
             - --config
-            - {{.}}
-            {{- end}}
+            - {{.ConfigPath}}
             - --dest
             - {{.LogPath}}/$(POD_NAME)
             - --credential-file
