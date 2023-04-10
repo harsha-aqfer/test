@@ -192,18 +192,26 @@ job_kinds:
     required_files:
       - name: config.yaml
 
-config_bundle:
-  destination: "{{.BucketPrefixWithCredential}}/amdp/{{.Cid}}/{{.SandboxName}}/{{.JobName}}/{{.RunId}}/bundle.yaml"
-  sources:
-    - file_type: system
-      pod_dest_folder: /etc/opt/aqfer/
-      github_src_paths:
-        - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/system/
-    - file_type: user
-      pod_dest_folder: /opt/aqfer/user/
-      github_src_paths:
-        - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/user/
-    - file_type: other
-      pod_dest_folder: /etc/opt/aqfer/
-      github_src_paths:
-        - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/credentials.yaml
+config_bundles:
+  - destination: "{{.BucketPrefixWithCredential}}/amdp/{{.Cid}}/{{.SandboxName}}/{{.JobName}}/{{.RunId}}/credentials.yaml"
+    sources:
+      - file_type: other
+        pod_dest_folder: /etc/opt/aqfer/
+        github_src_paths:
+          - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/credentials.yaml
+  
+  - destination: "{{.BucketPrefixWithCredential}}/amdp/{{.Cid}}/{{.SandboxName}}/{{.JobName}}/{{.RunId}}/bundle.yaml"
+    sources:
+      - file_type: system
+        pod_dest_folder: /etc/opt/aqfer/
+        github_src_paths:
+          - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/system/
+      - file_type: user
+        pod_dest_folder: /opt/aqfer/user/
+        github_src_paths:
+          - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/jobs/{{.JobName}}/user/
+      - file_type: other
+        pod_dest_folder: /etc/opt/aqfer/
+        github_src_paths:
+          - datalake/cids/{{.Cid}}/sandboxes/{{.SandboxName}}/credentials.yaml
+  
