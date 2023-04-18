@@ -193,7 +193,7 @@ job_kinds:
       - name: config.yaml
 
 config_bundle:
-  destination: "{{.BucketPrefixWithCredential}}/amdp/{{.Cid}}/{{.SandboxName}}/{{.JobName}}/{{.RunId}}/bundle.yaml"
+  destination: "{{.BucketPrefixWithCredential}}/amdp/{{.Cid}}/{{.SandboxName}}/{{.JobName}}/{{.GitCommit}}/bundle.yaml"
   sources:
     - file_type: system
       pod_dest_folder: /etc/opt/aqfer/
