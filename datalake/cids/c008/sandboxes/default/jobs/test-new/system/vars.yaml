@@ -1,5 +1,3 @@
 locations: &locations
-  {{range checkpoint_in "type=filter" "base_path=s3://c008.default@com.aqfer-dev.tmp/amdp-services/collator/examples/example-2/input/" "checkpoint_file=s3://c008.default@com.aqfer-dev.tmp/amdp-services/collator/examples/example-2/checkpoint/"}}
-  - folder: {{.}}
-  {{end}}
+  - folder: s3://c008.default@com.aqfer-dev.tmp/amdp-services/collator/examples/example-2/input/
 destination: &destination s3://c008.default@com.aqfer-dev.tmp/amdp-services/collator/examples/example-2/output
